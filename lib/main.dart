@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(MyApp());
@@ -9,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'BTC',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -22,7 +25,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'BTC Info Home Page'),
     );
   }
 }
@@ -45,9 +48,30 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
+class BitcoinInfo {
+  final String priceInDollars;
+  final String btcBalance;
+  final String accBalance;
+
+  BitcoinInfo({@required this.priceInDollars, @required this.btcBalance, @required this.accBalance});
+
+  factory BitcoinInfo.fromJson(Map<String, dynamic> json) {
+    return BitcoinInfo(
+     priceInDollars: json['priceInDollars'],
+     btcBalance: json['btcBalance'],
+     accBalance: json['accBalance'],
+    );
+  }
+}
+
+Future<BitcoinInfo> fetch() async {
+  final response = await http.get(Uri.http('localhost:8080', 'btc'));
+  return BitcoinInfo.fromJson(jsonDecode(response.body));
+}
+
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
-
+  Future<BitcoinInfo> futureBtc;
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -57,6 +81,12 @@ class _MyHomePageState extends State<MyHomePage> {
       // called again, and so nothing would appear to happen.
       _counter++;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    futureBtc = fetch();
   }
 
   @override
@@ -76,31 +106,63 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Current price of bitcoin: ',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline1,
-            ),
-          ],
+
+        child: FutureBuilder<BitcoinInfo>(
+          future: futureBtc,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Column(
+                // Column is also a layout widget. It takes a list of children and
+                // arranges them vertically. By default, it sizes itself to fit its
+                // children horizontally, and tries to be as tall as its parent.
+                //
+                // Invoke "debug painting" (press "p" in the console, choose the
+                // "Toggle Debug Paint" action from the Flutter Inspector in Android
+                // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+                // to see the wireframe for each widget.
+                //
+                // Column has various properties to control how it sizes itself and
+                // how it positions its children. Here we use mainAxisAlignment to
+                // center the children vertically; the main axis here is the vertical
+                // axis because Columns are vertical (the cross axis would be
+                // horizontal).
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'My BTC balance: ',
+                    style: Theme.of(context).textTheme.headline3,
+                  ),
+                  Text(
+                    snapshot.data.btcBalance + ' BTC',
+                    style: Theme.of(context).textTheme.headline1,
+                  ),
+
+                  Text(
+                    'My account balance: ',
+                    style: Theme.of(context).textTheme.headline3,
+                  ),
+                  Text(
+                    '\$' + snapshot.data.accBalance,
+                    style: Theme.of(context).textTheme.headline1,
+                  ),
+
+                  Text(
+                    'Current price of bitcoin: ',
+                    style: Theme.of(context).textTheme.headline3,
+                  ),
+                  Text(
+                    '\$' + snapshot.data.priceInDollars,
+                    style: Theme.of(context).textTheme.headline1,
+                  ),
+                ],
+              );
+            } else if (snapshot.hasError) {
+              return Text("${snapshot.error}");
+            }
+
+            // By default, show a loading spinner.
+            return CircularProgressIndicator();
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(
