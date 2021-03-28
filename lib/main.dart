@@ -67,7 +67,7 @@ class BitcoinInfo {
 }
 
 Future<BitcoinInfo> fetch(String userId) async {
-  final response = await http.get(Uri.http('sheltered-eyrie-96229.herokuapp.com', 'btc/$userId'));
+  final response = await http.get(Uri.https('sheltered-eyrie-96229.herokuapp.com', 'btc/$userId'));
   return BitcoinInfo.fromJson(jsonDecode(response.body));
 }
 
