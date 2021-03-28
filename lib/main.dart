@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:mystocks_ui/app.dart';
 
 void main() {
   runApp(MyApp());
@@ -25,13 +26,14 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'BTC Info Home Page'),
+      home: UserForm(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  final String userId;
+  MyHomePage({Key key, this.title, @required this.userId}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -45,7 +47,7 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState(userId: userId);
 }
 
 class BitcoinInfo {
@@ -64,14 +66,17 @@ class BitcoinInfo {
   }
 }
 
-Future<BitcoinInfo> fetch() async {
-  final response = await http.get(Uri.http('localhost:8080', 'btc'));
+Future<BitcoinInfo> fetch(String userId) async {
+  final response = await http.get(Uri.http('localhost:8080', 'btc/$userId'));
   return BitcoinInfo.fromJson(jsonDecode(response.body));
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   Future<BitcoinInfo> futureBtc;
+  String userId;
+
+  _MyHomePageState({@required this.userId});
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -86,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    futureBtc = fetch();
+    futureBtc = fetch(userId);
   }
 
   @override
