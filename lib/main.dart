@@ -135,29 +135,29 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: <Widget>[
                   Text(
                     'My BTC balance: ',
-                    style: Theme.of(context).textTheme.headline3,
+                    style: Theme.of(context).textTheme.headline4,
                   ),
                   Text(
                     snapshot.data.btcBalance + ' BTC',
-                    style: Theme.of(context).textTheme.headline1,
+                    style: Theme.of(context).textTheme.headline2,
                   ),
 
                   Text(
                     'My account balance: ',
-                    style: Theme.of(context).textTheme.headline3,
+                    style: Theme.of(context).textTheme.headline4,
                   ),
                   Text(
                     '\$' + snapshot.data.accBalance,
-                    style: Theme.of(context).textTheme.headline1,
+                    style: Theme.of(context).textTheme.headline2,
                   ),
 
                   Text(
                     'Current price of bitcoin: ',
-                    style: Theme.of(context).textTheme.headline3,
+                    style: Theme.of(context).textTheme.headline4,
                   ),
                   Text(
                     '\$' + snapshot.data.priceInDollars,
-                    style: Theme.of(context).textTheme.headline1,
+                    style: Theme.of(context).textTheme.headline2,
                   ),
                 ],
               );
@@ -170,6 +170,12 @@ class _MyHomePageState extends State<MyHomePage> {
           },
         ),
       ),
+      bottomNavigationBar: BottomAppBar(
+          child: Text(
+            "Powered by CoinDesk",
+            textAlign: TextAlign.center,
+          ),
+          color: Colors.blueGrey),
       floatingActionButton: FloatingActionButton(
         onPressed: _incrementCounter,
         tooltip: 'Increment',
