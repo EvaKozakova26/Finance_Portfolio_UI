@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:mystocks_ui/app.dart';
+import 'package:mystocks_ui/user_form.dart';
+import 'model/bitcoin_info.dart';
 
 void main() {
   runApp(MyApp());
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
         // or simply save your changes to "hot reload" in a Flutter IDE).
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.amber,
       ),
       home: UserForm(),
     );
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   final String userId;
+
   MyHomePage({Key key, this.title, @required this.userId}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
@@ -50,33 +52,29 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState(userId: userId);
 }
 
-class BitcoinInfo {
-  final String priceInDollars;
-  final String btcBalance;
-  final String accBalance;
-
-  BitcoinInfo({@required this.priceInDollars, @required this.btcBalance, @required this.accBalance});
-
-  factory BitcoinInfo.fromJson(Map<String, dynamic> json) {
-    return BitcoinInfo(
-     priceInDollars: json['priceInDollars'],
-     btcBalance: json['btcBalance'],
-     accBalance: json['accBalance'],
-    );
+Future<BitcoinInfo> fetch(String userId, String currency) async {
+  // todo enums + server changes
+  if (currency == "czk") {
+    return BitcoinInfo.fromJson({
+      'priceInDollars': "0",
+      'btcBalance': "0",
+      'accBalance': "0",
+    });
+  } else {
+    // todo konfiguračně...
+    final response = await http
+        .get(Uri.https('sheltered-eyrie-96229.herokuapp.com', 'btc/$userId'));
+    return BitcoinInfo.fromJson(jsonDecode(response.body));
   }
 }
 
-Future<BitcoinInfo> fetch(String userId) async {
-  final response = await http.get(Uri.https('sheltered-eyrie-96229.herokuapp.com', 'btc/$userId'));
-  return BitcoinInfo.fromJson(jsonDecode(response.body));
-}
-
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   Future<BitcoinInfo> futureBtc;
   String userId;
+  String currency = "usd";
 
   _MyHomePageState({@required this.userId});
+
   void _incrementCounter() {
     setState(() {
       // This call to setState tells the Flutter framework that something has
@@ -84,14 +82,13 @@ class _MyHomePageState extends State<MyHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
-      _counter++;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    futureBtc = fetch(userId);
+    futureBtc = fetch(userId, currency);
   }
 
   @override
@@ -107,6 +104,35 @@ class _MyHomePageState extends State<MyHomePage> {
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
+        actions: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              TextButton(
+                child: Text('CZK'),
+                onPressed: () {
+                  currency = "czk";
+                  _refreshData();
+                },
+                style: TextButton.styleFrom(
+                    primary: Colors.blueGrey,
+                    backgroundColor: Colors.white70,
+                    textStyle: TextStyle(fontSize: 20)),
+              ),
+              TextButton(
+                child: Text('USD'),
+                onPressed: () {
+                  currency = "usd";
+                  _refreshData();
+                },
+                style: TextButton.styleFrom(
+                    primary: Colors.blueGrey,
+                    backgroundColor: Colors.white70,
+                    textStyle: TextStyle(fontSize: 20)),
+              )
+            ],
+          )
+        ],
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -141,7 +167,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     snapshot.data.btcBalance + ' BTC',
                     style: Theme.of(context).textTheme.headline2,
                   ),
-
                   Text(
                     'My account balance: ',
                     style: Theme.of(context).textTheme.headline4,
@@ -150,7 +175,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     '\$' + snapshot.data.accBalance,
                     style: Theme.of(context).textTheme.headline2,
                   ),
-
                   Text(
                     'Current price of bitcoin: ',
                     style: Theme.of(context).textTheme.headline4,
@@ -182,5 +206,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+  Future<void> _refreshData() async {
+    setState(() {
+      futureBtc = fetch(userId, currency);
+    });
   }
 }
