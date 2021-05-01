@@ -1,7 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:mystocks_ui/model/btc_balance.dart';
 import 'package:mystocks_ui/user_form.dart';
 import 'model/bitcoin_info.dart';
 
@@ -53,25 +54,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 Future<BitcoinInfo> fetch(String userId, String currency) async {
-  // todo enums + server changes
-  if (currency == "czk") {
-    return BitcoinInfo.fromJson({
-      'priceInDollars': "0",
-      'btcBalance': "0",
-      'accBalance': "0",
-    });
-  } else {
-    // todo konfiguračně...
-    final response = await http
-        .get(Uri.https('sheltered-eyrie-96229.herokuapp.com', 'btc/$userId'));
-    return BitcoinInfo.fromJson(jsonDecode(response.body));
-  }
+  // todo enums
+  // todo konfiguračně...
+  // localhost:8080
+  // sheltered-eyrie-96229.herokuapp.com
+  final response = await http.get(Uri.https('sheltered-eyrie-96229.herokuapp.com', 'btc/$userId'));
+  return BitcoinInfo.fromJson(jsonDecode(response.body));
 }
 
 class _MyHomePageState extends State<MyHomePage> {
   Future<BitcoinInfo> futureBtc;
   String userId;
-  String currency = "usd";
+  String currency = "USD";
 
   _MyHomePageState({@required this.userId});
 
@@ -111,8 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
               TextButton(
                 child: Text('CZK'),
                 onPressed: () {
-                  currency = "czk";
-                  _refreshData();
+                  _refreshData("CZK");
                 },
                 style: TextButton.styleFrom(
                     primary: Colors.blueGrey,
@@ -122,8 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
               TextButton(
                 child: Text('USD'),
                 onPressed: () {
-                  currency = "usd";
-                  _refreshData();
+                  _refreshData("USD");
                 },
                 style: TextButton.styleFrom(
                     primary: Colors.blueGrey,
@@ -172,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: Theme.of(context).textTheme.headline4,
                   ),
                   Text(
-                    '\$' + snapshot.data.accBalance,
+                    getAccBalance(snapshot.data),
                     style: Theme.of(context).textTheme.headline2,
                   ),
                   Text(
@@ -180,7 +172,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: Theme.of(context).textTheme.headline4,
                   ),
                   Text(
-                    '\$' + snapshot.data.priceInDollars,
+                    getPrice(snapshot.data),
                     style: Theme.of(context).textTheme.headline2,
                   ),
                 ],
@@ -207,9 +199,29 @@ class _MyHomePageState extends State<MyHomePage> {
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
-  Future<void> _refreshData() async {
+  Future<void> _refreshData(String actCurrency) async {
     setState(() {
-      futureBtc = fetch(userId, currency);
+      currency = actCurrency;
     });
+  }
+
+  String getAccBalance(BitcoinInfo data) {
+    BtcBalance balance = data?.btcRates?.firstWhere((element) => element.currency == currency,
+        orElse: () => new BtcBalance(currency: "USD", price: "0", accBalance: "0"));
+    if (currency == "USD") {
+      return '\$' + balance.accBalance;
+    } else {
+      return balance.accBalance + " Kč";
+    }
+  }
+
+  String getPrice(BitcoinInfo data) {
+    BtcBalance balance = data?.btcRates?.firstWhere((element) => element.currency == currency,
+        orElse: () => new BtcBalance(currency: "USD", price: "0", accBalance: "0"));
+    if (currency == "USD") {
+      return '\$' + balance.price;
+    } else {
+      return balance.price + " Kč";
+    }
   }
 }
