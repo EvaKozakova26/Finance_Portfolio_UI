@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
+import 'package:mystocks_ui/constants/currency.dart';
 import 'package:mystocks_ui/model/btc_balance.dart';
 import 'package:mystocks_ui/user_form.dart';
 import 'model/bitcoin_info.dart';
@@ -54,7 +55,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 Future<BitcoinInfo> fetch(String userId, String currency) async {
-  // todo enums
   // todo konfiguračně...
   // localhost:8080
   // sheltered-eyrie-96229.herokuapp.com
@@ -65,7 +65,7 @@ Future<BitcoinInfo> fetch(String userId, String currency) async {
 class _MyHomePageState extends State<MyHomePage> {
   Future<BitcoinInfo> futureBtc;
   String userId;
-  String currency = "USD";
+  String currency = Currency.USD;
 
   _MyHomePageState({@required this.userId});
 
@@ -103,9 +103,9 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               TextButton(
-                child: Text('CZK'),
+                child: Text(Currency.CZK),
                 onPressed: () {
-                  _refreshData("CZK");
+                  _refreshData(Currency.CZK);
                 },
                 style: TextButton.styleFrom(
                     primary: Colors.blueGrey,
@@ -113,9 +113,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     textStyle: TextStyle(fontSize: 20)),
               ),
               TextButton(
-                child: Text('USD'),
+                child: Text(Currency.USD),
                 onPressed: () {
-                  _refreshData("USD");
+                  _refreshData(Currency.USD);
                 },
                 style: TextButton.styleFrom(
                     primary: Colors.blueGrey,
@@ -206,9 +206,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String getAccBalance(BitcoinInfo data) {
-    BtcBalance balance = data?.btcRates?.firstWhere((element) => element.currency == currency,
-        orElse: () => new BtcBalance(currency: "USD", price: "0", accBalance: "0"));
-    if (currency == "USD") {
+    BtcBalance balance = filterBalance(data);
+    if (currency == Currency.USD) {
       return '\$' + balance.accBalance;
     } else {
       return balance.accBalance + " Kč";
@@ -216,12 +215,16 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String getPrice(BitcoinInfo data) {
-    BtcBalance balance = data?.btcRates?.firstWhere((element) => element.currency == currency,
-        orElse: () => new BtcBalance(currency: "USD", price: "0", accBalance: "0"));
-    if (currency == "USD") {
+    BtcBalance balance = filterBalance(data);
+    if (currency == Currency.USD) {
       return '\$' + balance.price;
     } else {
       return balance.price + " Kč";
     }
+  }
+
+  BtcBalance filterBalance(BitcoinInfo data) {
+    return data?.btcRates?.firstWhere((element) => element.currency == currency,
+        orElse: () => new BtcBalance(currency: Currency.USD, price: "0", accBalance: "0"));
   }
 }
