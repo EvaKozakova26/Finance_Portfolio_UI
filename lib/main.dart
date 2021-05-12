@@ -56,7 +56,7 @@ class MyHomePage extends StatefulWidget {
 
 Future<BitcoinInfo> fetch(String userId, String currency) async {
   // todo konfiguračně...
-  // localhost:8080
+  // localhost:8080  - jen http
   // sheltered-eyrie-96229.herokuapp.com
   final response = await http.get(Uri.https('sheltered-eyrie-96229.herokuapp.com', 'btc/$userId'));
   return BitcoinInfo.fromJson(jsonDecode(response.body));
@@ -65,7 +65,7 @@ Future<BitcoinInfo> fetch(String userId, String currency) async {
 class _MyHomePageState extends State<MyHomePage> {
   Future<BitcoinInfo> futureBtc;
   String userId;
-  String currency = Currency.USD;
+  String currency = Currency.CZK;
 
   _MyHomePageState({@required this.userId});
 
@@ -160,7 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: Theme.of(context).textTheme.headline2,
                   ),
                   Text(
-                    'My account balance: ',
+                    getAccountBalanceText(snapshot.data),
                     style: Theme.of(context).textTheme.headline4,
                   ),
                   Text(
@@ -221,6 +221,19 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       return balance.price + " Kč";
     }
+  }
+
+  String getAccountBalanceText(BitcoinInfo data) {
+    String text = 'My account balance: ';
+    if (currency == Currency.CZK) {
+      BtcBalance balance = filterBalance(data);
+      num accBalance = num.parse(balance.accBalance);
+      num investedBalance = num.parse(data.investedInCrowns);
+      double diff = accBalance - investedBalance;
+      return text + diff.round().toString() + " Kč";
+
+    }
+    return text;
   }
 
   BtcBalance filterBalance(BitcoinInfo data) {
