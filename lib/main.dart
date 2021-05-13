@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'package:mystocks_ui/constants/currency.dart';
 import 'package:mystocks_ui/model/btc_balance.dart';
+import 'package:mystocks_ui/transaction_list.dart';
 import 'package:mystocks_ui/user_form.dart';
 import 'model/bitcoin_info.dart';
 
@@ -174,6 +175,18 @@ class _MyHomePageState extends State<MyHomePage> {
                   Text(
                     getPrice(snapshot.data),
                     style: Theme.of(context).textTheme.headline2,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => TransactionList(userId: userId,)),
+                        );
+                      },
+                      child: Text('List of all transactions'),
+                    ),
                   ),
                 ],
               );
