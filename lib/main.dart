@@ -67,6 +67,9 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<BitcoinInfo> futureBtc;
   String userId;
   String currency = Currency.CZK;
+  String accBalanceText = "";
+
+  String formAmountOfBtc;
 
   _MyHomePageState({@required this.userId});
 
@@ -86,8 +89,23 @@ class _MyHomePageState extends State<MyHomePage> {
     futureBtc = fetch(userId, currency);
   }
 
+  DateTime selectedDate = DateTime.now();
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate)
+      setState(() {
+        selectedDate = picked;
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -161,8 +179,12 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: Theme.of(context).textTheme.headline2,
                   ),
                   Text(
-                    getAccountBalanceText(snapshot.data),
+                    'My account balance:',
                     style: Theme.of(context).textTheme.headline4,
+                  ),
+                  Text(
+                    getAccountBalanceText(snapshot.data),
+                    style: accBalanceTheme(context, snapshot.data),
                   ),
                   Text(
                     getAccBalance(snapshot.data),
@@ -206,12 +228,101 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           color: Colors.blueGrey),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  content: Stack(
+                    children: <Widget>[
+                      Positioned(
+                        right: -40.0,
+                        top: -40.0,
+                        child: InkResponse(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: CircleAvatar(
+                            child: Icon(Icons.close),
+                            backgroundColor: Colors.red,
+                          ),
+                        ),
+                      ),
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  border: UnderlineInputBorder(),
+                                  labelText: 'enter amount of btc',
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'enter amount of btc';
+                                  }
+                                  formAmountOfBtc = value;
+                                  return null;
+                                },
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  border: UnderlineInputBorder(),
+                                  labelText: 'select date',
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'enter date';
+                                  }
+                                  formAmountOfBtc = value;
+                                  setState(() {
+                                    value = selectedDate.toString();
+                                  });
+                                  return null;
+                                },
+                                initialValue: "${selectedDate.toLocal()}".split(' ')[0],
+                                onTap: () => _selectDate(context),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton(
+                                child: Text("Submit"),
+                                onPressed: () {
+                                  if (_formKey.currentState.validate()) {
+                                    //_formKey.currentState.save();
+
+                                    // save form
+                                  }
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              });
+        },
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+  //todo ziskat data nejak jednoduseji, at nemusim volat 2x stejnou metodu
+  TextStyle accBalanceTheme(BuildContext context, BitcoinInfo data) =>
+      getAccountBalanceText(data).startsWith("-") ?
+      Theme.of(context).textTheme.headline4.apply(color: Colors.redAccent) :
+      Theme.of(context).textTheme.headline4.apply(color: Colors.greenAccent);
+
   Future<void> _refreshData(String actCurrency) async {
     setState(() {
       currency = actCurrency;
@@ -235,18 +346,32 @@ class _MyHomePageState extends State<MyHomePage> {
       return balance.price + " Kč";
     }
   }
-
+  // todo refactor volam nektere metodz nekolikrat
   String getAccountBalanceText(BitcoinInfo data) {
-    String text = 'My account balance: ';
+    String text = '';
     if (currency == Currency.CZK) {
-      BtcBalance balance = filterBalance(data);
-      num accBalance = num.parse(balance.accBalance);
-      num investedBalance = num.parse(data.investedInCrowns);
-      double diff = accBalance - investedBalance;
-      return text + diff.round().toString() + " Kč";
-
+      double diff = getAccBalanceValue(data);
+      double percentage = getAccBalancePercentage(data);
+      return text + diff.round().toString() + " Kč " + "(" + percentage.round().toString() + "%" + ")";
     }
+    accBalanceText = text;
     return text;
+  }
+
+  double getAccBalanceValue(BitcoinInfo data) {
+    BtcBalance balance = filterBalance(data);
+    num accBalance = num.parse(balance.accBalance);
+    num investedBalance = num.parse(data.investedInCrowns);
+    double diff = accBalance - investedBalance;
+    return diff;
+  }
+
+  double getAccBalancePercentage(BitcoinInfo data) {
+    BtcBalance balance = filterBalance(data);
+    num accBalance = num.parse(balance.accBalance);
+    num investedBalance = num.parse(data.investedInCrowns);
+    double percentage = accBalance * 100 / investedBalance;
+    return percentage > 100 ? percentage - 100 : 100 - percentage;
   }
 
   BtcBalance filterBalance(BitcoinInfo data) {
