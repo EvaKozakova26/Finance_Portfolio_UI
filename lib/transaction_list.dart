@@ -5,11 +5,24 @@ import 'dart:convert';
 
 import 'model/crypto_transaction.dart';
 
-class TransactionList extends StatelessWidget {
+class TransactionList extends StatefulWidget {
   final String userId;
   Future<CryptoTransactionListEntity> futureTransactions;
 
   TransactionList({@required this.userId, this.futureTransactions}) {
+    futureTransactions = getAllTransactions(userId);
+  }
+
+  @override
+  _TransactionListState createState() => _TransactionListState(userId: userId, futureTransactions: futureTransactions);
+
+}
+
+class _TransactionListState extends State<TransactionList> {
+  String userId;
+  Future<CryptoTransactionListEntity> futureTransactions;
+
+  _TransactionListState({@required this.userId, this.futureTransactions}) {
     futureTransactions = getAllTransactions(userId);
   }
 
@@ -28,12 +41,26 @@ class TransactionList extends StatelessWidget {
               if (snapshot.hasData) {
                 return PaginatedDataTable(
                   header: Text('List of crypto transactions'),
-                  rowsPerPage: 4,
+                  rowsPerPage: 5,
                   columns: [
                     DataColumn(label: Text('Crypto')),
                     DataColumn(label: Text('Date')),
                     DataColumn(label: Text('Buy/Sell value')),
                     DataColumn(label: Text('Amount of BTC')),
+                  ],
+                  actions: [
+                    Row(
+                      children: [
+                        Text(
+                          'Average buy price: ',
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ),
+                        Text(
+                          '\$' + snapshot.data?.averageTransactionValueInDollars?.round().toString() + " / " + snapshot.data?.averageTransactionValueInCrowns?.round().toString() + " Kč",
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ),
+                      ],
+                    )
                   ],
                   source: _DataSource(context, userId, snapshot.data.transactions),
                 );

@@ -371,7 +371,7 @@ class _MyHomePageState extends State<MyHomePage> {
     num accBalance = num.parse(balance.accBalance);
     num investedBalance = num.parse(data.investedInCrowns);
     double percentage = accBalance * 100 / investedBalance;
-    return percentage > 100 ? percentage - 100 : 100 - percentage;
+    return percentage - 100;
   }
 
   BtcBalance filterBalance(BitcoinInfo data) {
