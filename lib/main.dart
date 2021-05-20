@@ -1,14 +1,20 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 import 'package:mystocks_ui/constants/currency.dart';
+import 'package:mystocks_ui/helper/bitcoin_data_helper.dart';
 import 'package:mystocks_ui/model/btc_balance.dart';
 import 'package:mystocks_ui/transaction_list.dart';
 import 'package:mystocks_ui/user_form.dart';
+import 'package:mystocks_ui/crypto_api.dart';
 import 'model/bitcoin_info.dart';
 
 void main() {
+  Logger.root.level = Level.ALL; // defaults to Level.INFO
+  Logger.root.onRecord.listen((record) {
+    print('${record.level.name}: ${record.time}: ${record.message}');
+  });
+
   runApp(MyApp());
 }
 
@@ -55,14 +61,6 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState(userId: userId);
 }
 
-Future<BitcoinInfo> fetch(String userId, String currency) async {
-  // todo konfiguračně...
-  // localhost:8080  - jen http
-  // sheltered-eyrie-96229.herokuapp.com
-  final response = await http.get(Uri.https('sheltered-eyrie-96229.herokuapp.com', 'btc/$userId'));
-  return BitcoinInfo.fromJson(jsonDecode(response.body));
-}
-
 class _MyHomePageState extends State<MyHomePage> {
   Future<BitcoinInfo> futureBtc;
   String userId;
@@ -70,6 +68,8 @@ class _MyHomePageState extends State<MyHomePage> {
   String accBalanceText = "";
 
   String formAmountOfBtc;
+
+  final BitcoinDataHelper bitcoinDataHelper = new BitcoinDataHelper();
 
   _MyHomePageState({@required this.userId});
 
@@ -86,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    futureBtc = fetch(userId, currency);
+    futureBtc = CryptoApi().getBtcPrice(userId, currency);
   }
 
   DateTime selectedDate = DateTime.now();
@@ -187,7 +187,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: accBalanceTheme(context, snapshot.data),
                   ),
                   Text(
-                    getAccBalance(snapshot.data),
+                    getAccBalanceText(snapshot.data),
                     style: Theme.of(context).textTheme.headline2,
                   ),
                   Text(
@@ -195,7 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: Theme.of(context).textTheme.headline4,
                   ),
                   Text(
-                    getPrice(snapshot.data),
+                    getPriceText(snapshot.data),
                     style: Theme.of(context).textTheme.headline2,
                   ),
                   Padding(
@@ -317,20 +317,20 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  //todo ziskat data nejak jednoduseji, at nemusim volat 2x stejnou metodu
-  TextStyle accBalanceTheme(BuildContext context, BitcoinInfo data) =>
-      getAccountBalanceText(data).startsWith("-") ?
-      Theme.of(context).textTheme.headline4.apply(color: Colors.redAccent) :
-      Theme.of(context).textTheme.headline4.apply(color: Colors.greenAccent);
-
   Future<void> _refreshData(String actCurrency) async {
     setState(() {
       currency = actCurrency;
     });
   }
 
-  String getAccBalance(BitcoinInfo data) {
-    BtcBalance balance = filterBalance(data);
+  //todo ziskat data nejak jednoduseji, at nemusim volat 2x stejnou metodu
+  TextStyle accBalanceTheme(BuildContext context, BitcoinInfo data) =>
+      getAccountBalanceText(data).startsWith("-") ?
+      Theme.of(context).textTheme.headline4.apply(color: Colors.redAccent) :
+      Theme.of(context).textTheme.headline4.apply(color: Colors.greenAccent);
+
+  String getAccBalanceText(BitcoinInfo data) {
+    BtcBalance balance = bitcoinDataHelper.filterBalanceByCurrency(data, currency);
     if (currency == Currency.USD) {
       return '\$' + balance.accBalance;
     } else {
@@ -338,8 +338,8 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  String getPrice(BitcoinInfo data) {
-    BtcBalance balance = filterBalance(data);
+  String getPriceText(BitcoinInfo data) {
+    BtcBalance balance = bitcoinDataHelper.filterBalanceByCurrency(data, currency);
     if (currency == Currency.USD) {
       return '\$' + balance.price;
     } else {
@@ -350,32 +350,11 @@ class _MyHomePageState extends State<MyHomePage> {
   String getAccountBalanceText(BitcoinInfo data) {
     String text = '';
     if (currency == Currency.CZK) {
-      double diff = getAccBalanceValue(data);
-      double percentage = getAccBalancePercentage(data);
+      double diff = bitcoinDataHelper.getAccBalanceValue(data, currency);
+      double percentage = bitcoinDataHelper.getAccBalancePercentage(data, currency);
       return text + diff.round().toString() + " Kč " + "(" + percentage.round().toString() + "%" + ")";
     }
     accBalanceText = text;
     return text;
-  }
-
-  double getAccBalanceValue(BitcoinInfo data) {
-    BtcBalance balance = filterBalance(data);
-    num accBalance = num.parse(balance.accBalance);
-    num investedBalance = num.parse(data.investedInCrowns);
-    double diff = accBalance - investedBalance;
-    return diff;
-  }
-
-  double getAccBalancePercentage(BitcoinInfo data) {
-    BtcBalance balance = filterBalance(data);
-    num accBalance = num.parse(balance.accBalance);
-    num investedBalance = num.parse(data.investedInCrowns);
-    double percentage = accBalance * 100 / investedBalance;
-    return percentage - 100;
-  }
-
-  BtcBalance filterBalance(BitcoinInfo data) {
-    return data?.btcRates?.firstWhere((element) => element.currency == currency,
-        orElse: () => new BtcBalance(currency: Currency.USD, price: "0", accBalance: "0"));
   }
 }

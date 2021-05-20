@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mystocks_ui/crypto_api.dart';
 import 'package:mystocks_ui/model/crypto_transaction_list_entity.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 import 'model/crypto_transaction.dart';
 
@@ -10,7 +9,7 @@ class TransactionList extends StatefulWidget {
   Future<CryptoTransactionListEntity> futureTransactions;
 
   TransactionList({@required this.userId, this.futureTransactions}) {
-    futureTransactions = getAllTransactions(userId);
+    futureTransactions = CryptoApi().getAllTransactions(userId);
   }
 
   @override
@@ -22,9 +21,7 @@ class _TransactionListState extends State<TransactionList> {
   String userId;
   Future<CryptoTransactionListEntity> futureTransactions;
 
-  _TransactionListState({@required this.userId, this.futureTransactions}) {
-    futureTransactions = getAllTransactions(userId);
-  }
+  _TransactionListState({@required this.userId, this.futureTransactions});
 
   @override
   Widget build(BuildContext context) {
@@ -125,12 +122,4 @@ class _DataSource extends DataTableSource {
   @override
   int get selectedRowCount => _selectedCount;
 
-}
-
-Future<CryptoTransactionListEntity> getAllTransactions(String userId) async {
-  // todo konfiguračně... + refactor do servicy
-  // localhost:8080  - jen http
-  // sheltered-eyrie-96229.herokuapp.com
-  final response = await http.get(Uri.https('sheltered-eyrie-96229.herokuapp.com', 'all/$userId'));
-  return CryptoTransactionListEntity.fromJson(jsonDecode(response.body));
 }
