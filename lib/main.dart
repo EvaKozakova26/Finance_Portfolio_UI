@@ -4,6 +4,7 @@ import 'package:logging/logging.dart';
 import 'package:mystocks_ui/constants/currency.dart';
 import 'package:mystocks_ui/helper/bitcoin_data_helper.dart';
 import 'package:mystocks_ui/model/btc_balance.dart';
+import 'package:mystocks_ui/model/crypto_transaction_create_entity.dart';
 import 'package:mystocks_ui/transaction_list.dart';
 import 'package:mystocks_ui/user_form.dart';
 import 'package:mystocks_ui/crypto_api.dart';
@@ -68,24 +69,20 @@ class _MyHomePageState extends State<MyHomePage> {
   String accBalanceText = "";
 
   String formAmountOfBtc;
+  String formTransactionValueInCrowns;
+  String formAssetType;
+  DateTime formTransactionDate;
+  TextEditingController dateField;
+
 
   final BitcoinDataHelper bitcoinDataHelper = new BitcoinDataHelper();
 
   _MyHomePageState({@required this.userId});
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-    });
-  }
-
   @override
   void initState() {
     super.initState();
+    dateField = TextEditingController();
     futureBtc = CryptoApi().getBtcPrice(userId, currency);
   }
 
@@ -100,6 +97,8 @@ class _MyHomePageState extends State<MyHomePage> {
     if (picked != null && picked != selectedDate)
       setState(() {
         selectedDate = picked;
+        formTransactionDate = selectedDate;
+        dateField.text = "${selectedDate.toLocal()}".split(' ')[0];
       });
   }
 
@@ -258,6 +257,24 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: TextFormField(
                                 decoration: InputDecoration(
                                   border: UnderlineInputBorder(),
+                                  labelText: 'Type',
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Type';
+                                  }
+                                  formAssetType = value;
+                                  return null;
+                                },
+                                initialValue: "btc",
+                                enabled: false,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  border: UnderlineInputBorder(),
                                   labelText: 'enter amount of btc',
                                 ),
                                 validator: (value) {
@@ -272,6 +289,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             Padding(
                               padding: EdgeInsets.all(8.0),
                               child: TextFormField(
+                                controller: dateField,
                                 decoration: InputDecoration(
                                   border: UnderlineInputBorder(),
                                   labelText: 'select date',
@@ -280,14 +298,28 @@ class _MyHomePageState extends State<MyHomePage> {
                                   if (value == null || value.isEmpty) {
                                     return 'enter date';
                                   }
-                                  formAmountOfBtc = value;
                                   setState(() {
                                     value = selectedDate.toString();
                                   });
                                   return null;
                                 },
-                                initialValue: "${selectedDate.toLocal()}".split(' ')[0],
                                 onTap: () => _selectDate(context),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  border: UnderlineInputBorder(),
+                                  labelText: 'enter transaction value in crowns',
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'enter transaction value in crowns';
+                                  }
+                                  formTransactionValueInCrowns = value;
+                                  return null;
+                                },
                               ),
                             ),
                             Padding(
@@ -296,7 +328,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                 child: Text("Submit"),
                                 onPressed: () {
                                   if (_formKey.currentState.validate()) {
-                                    //_formKey.currentState.save();
+                                    _formKey.currentState.save();
+                                    CryptoTransactionCreateEntity ctce = new CryptoTransactionCreateEntity(
+                                        assetType: formAssetType,
+                                        amount: formAmountOfBtc,
+                                        transactionDate: formTransactionDate,
+                                        transactionValue: formTransactionValueInCrowns);
+                                    CryptoApi().saveCryptoTransaction(ctce, userId);
 
                                     // save form
                                   }
