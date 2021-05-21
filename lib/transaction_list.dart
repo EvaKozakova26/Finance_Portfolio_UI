@@ -43,6 +43,7 @@ class _TransactionListState extends State<TransactionList> {
                     DataColumn(label: Text('Crypto')),
                     DataColumn(label: Text('Date')),
                     DataColumn(label: Text('Buy/Sell value')),
+                    DataColumn(label: Text('Market Price')),
                     DataColumn(label: Text('Amount of BTC')),
                   ],
                   actions: [
@@ -107,7 +108,8 @@ class _DataSource extends DataTableSource {
       cells: [
         DataCell(Text(row.type)),
         DataCell(Text(row.date)),
-        DataCell(Text(row.buySellValue + " Kč")),
+        DataCell(Text(row.buySellValue + " Kč" + " / " + '\$' + row.buySellValueInDollars)),
+        DataCell(Text(row.stockPriceInCrowns + " Kč" + " / " + '\$' + row.stockPriceInDollars)),
         DataCell(Text(row.amountBtc)),
       ],
     );
