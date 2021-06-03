@@ -34,7 +34,7 @@ class CryptoApi {
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(ctce.toJson()));
     logger.fine("saveCryptoTransaction has finished with code: " + response.statusCode.toString());
-    return null;
+    return CryptoTransactionCreateEntity.fromJson(jsonDecode(response.body));
   }
 
 

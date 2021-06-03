@@ -7,7 +7,7 @@ class CryptoTransactionCreateEntity {
   final String assetType;
   final DateTime transactionDate;
 
-  CryptoTransactionCreateEntity({@required this.assetType, @required this.amount, @required this.transactionDate, @required this.transactionValue});
+  CryptoTransactionCreateEntity({required this.assetType, required this.amount, required this.transactionDate, required this.transactionValue});
 
   factory CryptoTransactionCreateEntity.fromJson(Map<String, dynamic> json) {
     return CryptoTransactionCreateEntity(

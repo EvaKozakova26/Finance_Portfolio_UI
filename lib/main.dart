@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   final String userId;
 
-  MyHomePage({Key key, this.title, @required this.userId}) : super(key: key);
+  MyHomePage({Key? key, required this.title, required this.userId}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -63,21 +63,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Future<BitcoinInfo> futureBtc;
+  Future<BitcoinInfo>? futureBtc;
   String userId;
   String currency = Currency.CZK;
   String accBalanceText = "";
 
-  String formAmountOfBtc;
-  String formTransactionValueInCrowns;
-  String formAssetType;
-  DateTime formTransactionDate;
-  TextEditingController dateField;
+  String formAmountOfBtc = "";
+  String formTransactionValueInCrowns = "";
+  String formAssetType = "";
+  DateTime? formTransactionDate;
+  TextEditingController? dateField;
 
 
   final BitcoinDataHelper bitcoinDataHelper = new BitcoinDataHelper();
 
-  _MyHomePageState({@required this.userId});
+  _MyHomePageState({required this.userId});
 
   @override
   void initState() {
@@ -89,7 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
   DateTime selectedDate = DateTime.now();
 
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
+    final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
         firstDate: DateTime(2015, 8),
@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         selectedDate = picked;
         formTransactionDate = selectedDate;
-        dateField.text = "${selectedDate.toLocal()}".split(' ')[0];
+        dateField?.text = "${selectedDate.toLocal()}".split(' ')[0];
       });
   }
 
@@ -174,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: Theme.of(context).textTheme.headline4,
                   ),
                   Text(
-                    snapshot.data.btcBalance + ' BTC',
+                    snapshot.data!.btcBalance + ' BTC',
                     style: Theme.of(context).textTheme.headline2,
                   ),
                   Text(
@@ -182,11 +182,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: Theme.of(context).textTheme.headline4,
                   ),
                   Text(
-                    getAccountBalanceText(snapshot.data),
-                    style: accBalanceTheme(context, snapshot.data),
+                    getAccountBalanceText(snapshot.data!),
+                    style: accBalanceTheme(context, snapshot.data!),
                   ),
                   Text(
-                    getAccBalanceText(snapshot.data),
+                    getAccBalanceText(snapshot.data!),
                     style: Theme.of(context).textTheme.headline2,
                   ),
                   Text(
@@ -194,7 +194,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     style: Theme.of(context).textTheme.headline4,
                   ),
                   Text(
-                    getPriceText(snapshot.data),
+                    getPriceText(snapshot.data!),
                     style: Theme.of(context).textTheme.headline2,
                   ),
                   Padding(
@@ -327,12 +327,12 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: ElevatedButton(
                                 child: Text("Submit"),
                                 onPressed: () {
-                                  if (_formKey.currentState.validate()) {
-                                    _formKey.currentState.save();
+                                  if (_formKey.currentState!.validate()) {
+                                    _formKey.currentState!.save();
                                     CryptoTransactionCreateEntity ctce = new CryptoTransactionCreateEntity(
                                         assetType: formAssetType,
                                         amount: formAmountOfBtc,
-                                        transactionDate: formTransactionDate,
+                                        transactionDate: formTransactionDate!,
                                         transactionValue: formTransactionValueInCrowns);
                                     CryptoApi().saveCryptoTransaction(ctce, userId);
 
@@ -364,11 +364,11 @@ class _MyHomePageState extends State<MyHomePage> {
   //todo ziskat data nejak jednoduseji, at nemusim volat 2x stejnou metodu
   TextStyle accBalanceTheme(BuildContext context, BitcoinInfo data) =>
       getAccountBalanceText(data).startsWith("-") ?
-      Theme.of(context).textTheme.headline4.apply(color: Colors.redAccent) :
-      Theme.of(context).textTheme.headline4.apply(color: Colors.greenAccent);
+      Theme.of(context).textTheme.headline4!.apply(color: Colors.redAccent) :
+      Theme.of(context).textTheme.headline4!.apply(color: Colors.greenAccent);
 
   String getAccBalanceText(BitcoinInfo data) {
-    BtcBalance balance = bitcoinDataHelper.filterBalanceByCurrency(data, currency);
+    BtcBalance balance = bitcoinDataHelper.filterBalanceByCurrency(data, currency)!;
     if (currency == Currency.USD) {
       return '\$' + balance.accBalance;
     } else {
@@ -377,7 +377,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String getPriceText(BitcoinInfo data) {
-    BtcBalance balance = bitcoinDataHelper.filterBalanceByCurrency(data, currency);
+    BtcBalance balance = bitcoinDataHelper.filterBalanceByCurrency(data, currency)!;
     if (currency == Currency.USD) {
       return '\$' + balance.price;
     } else {
@@ -388,7 +388,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String getAccountBalanceText(BitcoinInfo data) {
     String text = '';
     if (currency == Currency.CZK) {
-      double diff = bitcoinDataHelper.getAccBalanceValue(data, currency);
+      num diff = bitcoinDataHelper.getAccBalanceValue(data, currency);
       double percentage = bitcoinDataHelper.getAccBalancePercentage(data, currency);
       return text + diff.round().toString() + " Kč " + "(" + percentage.round().toString() + "%" + ")";
     }

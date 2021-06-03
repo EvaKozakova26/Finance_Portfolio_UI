@@ -6,14 +6,14 @@ import 'model/crypto_transaction.dart';
 
 class TransactionList extends StatefulWidget {
   final String userId;
-  Future<CryptoTransactionListEntity> futureTransactions;
+  Future<CryptoTransactionListEntity>? futureTransactions;
 
-  TransactionList({@required this.userId, this.futureTransactions}) {
+  TransactionList({required this.userId, this.futureTransactions}) {
     futureTransactions = CryptoApi().getAllTransactions(userId);
   }
 
   @override
-  _TransactionListState createState() => _TransactionListState(userId: userId, futureTransactions: futureTransactions);
+  _TransactionListState createState() => _TransactionListState(userId: userId, futureTransactions: futureTransactions!);
 
 }
 
@@ -21,7 +21,7 @@ class _TransactionListState extends State<TransactionList> {
   String userId;
   Future<CryptoTransactionListEntity> futureTransactions;
 
-  _TransactionListState({@required this.userId, this.futureTransactions});
+  _TransactionListState({required this.userId, required this.futureTransactions});
 
   @override
   Widget build(BuildContext context) {
@@ -54,13 +54,13 @@ class _TransactionListState extends State<TransactionList> {
                           style: Theme.of(context).textTheme.bodyText2,
                         ),
                         Text(
-                          '\$' + snapshot.data?.averageTransactionValueInDollars?.round().toString() + " / " + snapshot.data?.averageTransactionValueInCrowns?.round().toString() + " Kč",
+                          '\$' + snapshot.data!.averageTransactionValueInDollars.round().toString() + " / " + snapshot.data!.averageTransactionValueInCrowns.round().toString() + " Kč",
                           style: Theme.of(context).textTheme.bodyText2,
                         ),
                       ],
                     )
                   ],
-                  source: _DataSource(context, userId, snapshot.data.transactions),
+                  source: _DataSource(context, userId, snapshot.data!.transactions),
                 );
               } else if (snapshot.hasError) {
                 return Text("${snapshot.error}");
@@ -85,21 +85,21 @@ class _DataSource extends DataTableSource {
   final BuildContext context;
   final String userId;
   final List<CryptoTransactionDto> transactions;
-  List<CryptoTransactionDto> _rows;
+  List<CryptoTransactionDto> _rows = [];
 
   int _selectedCount = 0;
 
   @override
   DataRow getRow(int index) {
     assert(index >= 0);
-    if (index >= _rows.length) return null;
+    if (index >= _rows.length) return DataRow(cells: []);
     final row = _rows[index];
     return DataRow.byIndex(
       index: index,
       selected: row.selected,
       onSelectChanged: (value) {
         if (row.selected != value) {
-          _selectedCount += value ? 1 : -1;
+          _selectedCount += value! ? 1 : -1;
           assert(_selectedCount >= 0);
           row.selected = value;
           notifyListeners();

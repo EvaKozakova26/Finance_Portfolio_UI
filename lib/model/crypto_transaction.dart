@@ -11,13 +11,13 @@ class CryptoTransactionDto {
   final String stockPriceInCrowns;
 
   CryptoTransactionDto({
-      @required this.type,
-      @required this.date,
-      @required this.amountBtc,
-      @required this.buySellValue,
-      @required this.buySellValueInDollars,
-      @required this.stockPriceInDollars,
-      @required this.stockPriceInCrowns
+      required this.type,
+      required this.date,
+      required this.amountBtc,
+      required this.buySellValue,
+      required this.buySellValueInDollars,
+      required this.stockPriceInDollars,
+      required this.stockPriceInCrowns
   });
 
 

@@ -17,7 +17,7 @@ class MyCustomFormState extends State<UserForm> {
   // Note: This is a GlobalKey<FormState>,
   // not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
-  String userIdValue;
+  String userIdValue = "";
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class MyCustomFormState extends State<UserForm> {
             child: ElevatedButton(
               onPressed: () {
                 // Validate returns true if the form is valid, or false otherwise.
-                if (_formKey.currentState.validate()) {
+                if (_formKey.currentState!.validate()) {
                   // process data
                   Navigator.push(
                     context,

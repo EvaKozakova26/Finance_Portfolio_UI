@@ -6,7 +6,7 @@ class BitcoinInfo {
   final String btcBalance;
   final String investedInCrowns;
 
-  BitcoinInfo({@required this.btcBalance, @required this.btcRates, @required this.investedInCrowns});
+  BitcoinInfo({required this.btcBalance, required this.btcRates, required this.investedInCrowns});
 
 
   factory BitcoinInfo.fromJson(Map<String, dynamic> json) {

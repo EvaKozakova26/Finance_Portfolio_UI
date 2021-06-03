@@ -6,7 +6,7 @@ class BtcBalance {
   final String price;
   final String accBalance;
 
-  BtcBalance({@required this.currency, @required this.price, @required this.accBalance});
+  BtcBalance({required this.currency, required this.price, required this.accBalance});
 
   factory BtcBalance.fromJson(Map<String, dynamic> json) {
     return BtcBalance(
