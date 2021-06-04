@@ -42,7 +42,7 @@ class MyAssets extends StatelessWidget {
             SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
                 crossAxisSpacing: defaultPadding,
-              childAspectRatio: 2.5
+              childAspectRatio: 2.0
             ),
             itemBuilder: (context, index) => AssetInfoCard(info: mockMyAsset[index],)
         )

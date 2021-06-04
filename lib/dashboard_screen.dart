@@ -49,7 +49,7 @@ class DashboardScreen extends StatelessWidget {
                       children: [
                         MyAssets(),
                         SizedBox(height: defaultPadding),
-                        RecentTransactions()
+                        RecentTransactions(userId: "dae")
                       ],
                     )
                   ),

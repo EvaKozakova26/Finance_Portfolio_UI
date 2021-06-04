@@ -1,12 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:mystocks_ui/constants/style.dart';
-import 'package:mystocks_ui/model/Transactions.dart';
+import 'package:mystocks_ui/model/crypto_transaction.dart';
+import 'package:mystocks_ui/model/crypto_transaction_list_entity.dart';
 
-class RecentTransactions extends StatelessWidget {
+import '../crypto_api.dart';
 
-  const RecentTransactions({
-    Key? key,
-  }) : super(key: key);
+class RecentTransactions extends StatefulWidget {
+  final String userId;
+  Future<CryptoTransactionListEntity>? futureTransactions;
+
+  RecentTransactions({required this.userId, this.futureTransactions}) {
+    futureTransactions = CryptoApi().getAllTransactions(userId);
+  }
+
+  @override
+  _RecentTransactionListState createState() => _RecentTransactionListState(
+      userId: userId, futureTransactions: futureTransactions!);
+}
+
+class _RecentTransactionListState extends State<RecentTransactions> {
+  String userId;
+  Future<CryptoTransactionListEntity> futureTransactions;
+
+  _RecentTransactionListState(
+      {required this.userId, required this.futureTransactions});
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +31,7 @@ class RecentTransactions extends StatelessWidget {
       padding: EdgeInsets.all(defaultPadding),
       decoration: BoxDecoration(
           color: secondaryColor,
-          borderRadius:
-          const BorderRadius.all(Radius.circular(10))
-      ),
+          borderRadius: const BorderRadius.all(Radius.circular(10))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -24,45 +39,56 @@ class RecentTransactions extends StatelessWidget {
             "Recent transactions",
             style: Theme.of(context).textTheme.subtitle1,
           ),
-          SizedBox(
-            width: double.infinity,
-            child: DataTable(
-              horizontalMargin: 0,
-              columnSpacing: defaultPadding,
-              columns: [
-                DataColumn(
-                    label: Text("Asset")
-                ),
-                DataColumn(
-                    label: Text("Date")
-                ),
-                DataColumn(
-                    label: Text("Transaction value")
-                ),
-                DataColumn(
-                    label: Text("Market price")
-                ),
-                DataColumn(
-                    label: Text("Amount")
-                )
-              ],
-              rows: List.generate(
-                  mockRecentTransactions.length,
-                      (index) => recentTransactionsDataRow(mockRecentTransactions[index])),
-            ),
-          )
+          FutureBuilder<CryptoTransactionListEntity>(
+            future: futureTransactions,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return SizedBox(
+                    width: double.infinity,
+                    child: DataTable(
+                      horizontalMargin: 0,
+                      columnSpacing: defaultPadding,
+                      columns: [
+                        DataColumn(label: Text("Asset")),
+                        DataColumn(label: Text("Date")),
+                        DataColumn(label: Text("Transaction value")),
+                        DataColumn(label: Text("Market price")),
+                        DataColumn(label: Text("Amount"))
+                      ],
+                      rows: List.generate(
+                        snapshot.data!.transactions.length,
+                        (index) => recentTransactionsDataRow(
+                            snapshot.data!.transactions[index]),
+                      ),
+                    ));
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
+
+              // By default, show a loading spinner.
+              return CircularProgressIndicator();
+            },
+          ),
         ],
       ),
     );
   }
 
-  DataRow recentTransactionsDataRow(RecentTransaction recentTransaction) {
+  DataRow recentTransactionsDataRow(CryptoTransactionDto recentTransaction) {
     return DataRow(cells: [
-      DataCell(Text(recentTransaction.title!)),
-      DataCell(Text(recentTransaction.date!)),
-      DataCell(Text(recentTransaction.transactionValue!)),
-      DataCell(Text(recentTransaction.marketPrice!)),
-      DataCell(Text(recentTransaction.amount!)),
+      DataCell(Text(recentTransaction.type)),
+      DataCell(Text(recentTransaction.date)),
+      DataCell(Text(recentTransaction.buySellValue +
+          " Kč" +
+          " / " +
+          '\$' +
+          recentTransaction.buySellValueInDollars)),
+      DataCell(Text(recentTransaction.stockPriceInCrowns +
+          " Kč" +
+          " / " +
+          '\$' +
+          recentTransaction.stockPriceInDollars)),
+      DataCell(Text(recentTransaction.amountBtc)),
     ]);
   }
 }
