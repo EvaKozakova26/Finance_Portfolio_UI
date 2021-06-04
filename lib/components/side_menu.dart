@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../transaction_list.dart';
+
 class SideMenu extends StatelessWidget {
-  const SideMenu({
-    Key? key,
+  String userId;
+
+  SideMenu({
+    Key? key, required this.userId,
   }) : super(key: key);
 
   @override
@@ -17,7 +21,12 @@ class SideMenu extends StatelessWidget {
                 child: Image.asset("icons/logo.png")
             ),
             DrawerListTile(title: "Dashboard", press: () {}, svgSrc: "icons/menu_dashboard.svg"),
-            DrawerListTile(title: "Transactions", press: () {}, svgSrc: "icons/menu_tran.svg")
+            DrawerListTile(title: "Transactions", press: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => TransactionList(userId: userId,)),
+              );
+            }, svgSrc: "icons/menu_tran.svg")
           ],
         ),
       ),

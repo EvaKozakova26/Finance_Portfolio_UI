@@ -14,7 +14,7 @@ class MainScreen extends StatelessWidget {
           children: [
             Expanded(
               // 1/6 part of the screen by default
-              child: SideMenu()
+              child: SideMenu(userId: "dae",)
             ),
             Expanded(
               // 5/6 part of the screen

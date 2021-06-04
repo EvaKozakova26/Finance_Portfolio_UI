@@ -37,14 +37,14 @@ class _TransactionListState extends State<TransactionList> {
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 return PaginatedDataTable(
-                  header: Text('List of crypto transactions'),
+                  header: Text('List of all transactions'),
                   rowsPerPage: 5,
                   columns: [
-                    DataColumn(label: Text('Crypto')),
+                    DataColumn(label: Text('Asset')),
                     DataColumn(label: Text('Date')),
-                    DataColumn(label: Text('Buy/Sell value')),
+                    DataColumn(label: Text('Transaction value')),
                     DataColumn(label: Text('Market Price')),
-                    DataColumn(label: Text('Amount of BTC')),
+                    DataColumn(label: Text('Amount')),
                   ],
                   actions: [
                     Row(
