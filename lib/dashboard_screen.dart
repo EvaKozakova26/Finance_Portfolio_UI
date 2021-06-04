@@ -2,14 +2,28 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mystocks_ui/constants/style.dart';
-import 'package:mystocks_ui/model/Transactions.dart';
 
 import 'components/header.dart';
 import 'components/my_assets.dart';
 import 'components/portfolio_details.dart';
 import 'components/recent_transactions.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
+  final String userId;
+
+  DashboardScreen({Key? key, required this.userId}) : super(key: key);
+
+  @override
+  _DashboardScreen createState() => _DashboardScreen(userId: userId);
+}
+
+
+class _DashboardScreen extends State<DashboardScreen> {
+  final String userId;
+
+  _DashboardScreen({required this.userId});
+
+
   @override
   Widget build(BuildContext context) {
     List<PieChartSectionData> pieChartSelectionData = [
@@ -38,7 +52,7 @@ class DashboardScreen extends StatelessWidget {
           padding: EdgeInsets.all(defaultPadding),
           child: Column(
             children: [
-              Header(),
+              Header(userId: userId),
               SizedBox(height: defaultPadding),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,9 +61,9 @@ class DashboardScreen extends StatelessWidget {
                     flex: 5,
                     child: Column(
                       children: [
-                        MyAssets(),
+                        MyAssets(userId: userId,),
                         SizedBox(height: defaultPadding),
-                        RecentTransactions(userId: "dae")
+                        RecentTransactions(userId: userId)
                       ],
                     )
                   ),

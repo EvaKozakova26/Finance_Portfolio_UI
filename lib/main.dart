@@ -5,6 +5,7 @@ import 'package:mystocks_ui/user_form.dart';
 import 'package:mystocks_ui/screens/main_screen.dart';
 import 'package:mystocks_ui/constants/style.dart';
 
+
 void main() {
   Logger.root.level = Level.ALL; // defaults to Level.INFO
   Logger.root.onRecord.listen((record) {

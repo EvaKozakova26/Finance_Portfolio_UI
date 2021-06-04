@@ -2,10 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mystocks_ui/constants/style.dart';
 
-class Header extends StatelessWidget {
-  const Header({
-    Key? key,
-  }) : super(key: key);
+
+class Header extends StatefulWidget {
+  final String userId;
+
+  Header({Key? key, required this.userId}) : super(key: key);
+
+  @override
+  _Header createState() => _Header(userId: userId);
+}
+
+
+class _Header extends State<Header> {
+  String userId;
+
+  _Header({required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -19,15 +30,17 @@ class Header extends StatelessWidget {
         Expanded(
           child: SearchField(),
         ),
-        ProfileCard()
+        ProfileCard(userId: userId)
       ],
     );
   }
 }
 
 class ProfileCard extends StatelessWidget {
-  const ProfileCard({
-    Key? key,
+  final String userId;
+
+  ProfileCard({
+    Key? key, required this.userId,
   }) : super(key: key);
 
   @override
@@ -49,7 +62,7 @@ class ProfileCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(
                 horizontal: defaultPadding / 2
             ),
-            child: Text("dae"),
+            child: Text(userId),
           )
         ],
       ),

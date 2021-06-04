@@ -19,7 +19,7 @@ class MainScreen extends StatelessWidget {
             Expanded(
               // 5/6 part of the screen
               flex: 5,
-              child: DashboardScreen()
+              child: DashboardScreen(userId: "dae",)
             )
           ],
         )
