@@ -17,7 +17,7 @@ class CryptoApi {
 
   Future<AssetDataListEntity> getAssetsData(String userId, String currency) async {
     logger.fine("getAssetsData has started");
-    final response = await http.get(Uri.http(Api.URL, 'assets/$userId'));
+    final response = await http.get(Uri.https(Api.URL, 'assets/$userId'));
     logger.fine("getAssetsData has finished with code: " + response.statusCode.toString());
     return AssetDataListEntity.fromJson(jsonDecode(response.body));
   }
