@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
-class BtcBalance {
+class AssetRate {
 
   final String currency;
   final String price;
   final String accBalance;
 
-  BtcBalance({required this.currency, required this.price, required this.accBalance});
+  AssetRate({required this.currency, required this.price, required this.accBalance});
 
-  factory BtcBalance.fromJson(Map<String, dynamic> json) {
-    return BtcBalance(
+  factory AssetRate.fromJson(Map<String, dynamic> json) {
+    return AssetRate(
       currency: json['currency'],
       price: json['price'],
       accBalance: json['accBalance'],

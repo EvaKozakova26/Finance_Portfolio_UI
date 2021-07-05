@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mystocks_ui/constants/currency.dart';
 import 'package:mystocks_ui/constants/style.dart';
 import 'package:mystocks_ui/helper/bitcoin_data_helper.dart';
-import 'package:mystocks_ui/model/bitcoin_info.dart';
+import 'package:mystocks_ui/model/asset_data.dart';
 import 'package:mystocks_ui/model/btc_balance.dart';
 
 class AssetInfoCard extends StatelessWidget {
@@ -10,7 +10,7 @@ class AssetInfoCard extends StatelessWidget {
     Key? key, required this.info, required this.currency
   }) : super(key: key);
 
-  final BitcoinInfo info;
+  final AssetData info;
   String currency;
 
   final BitcoinDataHelper bitcoinDataHelper = new BitcoinDataHelper();
@@ -39,7 +39,7 @@ class AssetInfoCard extends StatelessWidget {
                   borderRadius: const BorderRadius.all(Radius.circular(10))
               ),
               child: Text(
-                  info.btcBalance + ' BTC',
+                  info.assetBalance + ' BTC',
                 style: Theme.of(context)
                     .textTheme
                     .subtitle1!
@@ -93,13 +93,13 @@ class AssetInfoCard extends StatelessWidget {
     );
   }
 
-  TextStyle accBalanceTheme(BuildContext context, BitcoinInfo data) =>
+  TextStyle accBalanceTheme(BuildContext context, AssetData data) =>
       getAccountBalanceText(data).startsWith("-") ?
       Theme.of(context).textTheme.headline6!.apply(color: Colors.redAccent) :
       Theme.of(context).textTheme.headline6!.apply(color: Colors.greenAccent);
 
-  String getAccBalanceText(BitcoinInfo data) {
-    BtcBalance balance = bitcoinDataHelper.filterBalanceByCurrency(data, currency)!;
+  String getAccBalanceText(AssetData data) {
+    AssetRate balance = bitcoinDataHelper.filterBalanceByCurrency(data, currency)!;
     if (currency == Currency.USD) {
       return '\$' + balance.accBalance;
     } else {
@@ -107,8 +107,8 @@ class AssetInfoCard extends StatelessWidget {
     }
   }
 
-  String getPriceText(BitcoinInfo data) {
-    BtcBalance balance = bitcoinDataHelper.filterBalanceByCurrency(data, currency)!;
+  String getPriceText(AssetData data) {
+    AssetRate balance = bitcoinDataHelper.filterBalanceByCurrency(data, currency)!;
     if (currency == Currency.USD) {
       return '\$' + balance.price;
     } else {
@@ -116,7 +116,7 @@ class AssetInfoCard extends StatelessWidget {
     }
   }
   // todo refactor volam nektere metodz nekolikrat
-  String getAccountBalanceText(BitcoinInfo data) {
+  String getAccountBalanceText(AssetData data) {
     String text = '';
     if (currency == Currency.CZK) {
       num diff = bitcoinDataHelper.getAccBalanceValue(data, currency);

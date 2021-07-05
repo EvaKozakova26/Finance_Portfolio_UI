@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:mystocks_ui/transaction_list.dart';
 
@@ -49,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     dateField = TextEditingController();
-    futureBtc = CryptoApi().getBtcPrice(userId, currency);
+    futureBtc = CryptoApi().getAssetData(userId, currency);
   }
 
   DateTime selectedDate = DateTime.now();
@@ -334,7 +335,7 @@ class _MyHomePageState extends State<MyHomePage> {
       Theme.of(context).textTheme.headline4!.apply(color: Colors.greenAccent);
 
   String getAccBalanceText(BitcoinInfo data) {
-    BtcBalance balance = bitcoinDataHelper.filterBalanceByCurrency(data, currency)!;
+    AssetRate balance = bitcoinDataHelper.filterBalanceByCurrency(data, currency)!;
     if (currency == Currency.USD) {
       return '\$' + balance.accBalance;
     } else {
@@ -343,7 +344,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String getPriceText(BitcoinInfo data) {
-    BtcBalance balance = bitcoinDataHelper.filterBalanceByCurrency(data, currency)!;
+    AssetRate balance = bitcoinDataHelper.filterBalanceByCurrency(data, currency)!;
     if (currency == Currency.USD) {
       return '\$' + balance.price;
     } else {
@@ -362,3 +363,4 @@ class _MyHomePageState extends State<MyHomePage> {
     return text;
   }
 }
+*/

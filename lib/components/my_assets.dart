@@ -2,34 +2,31 @@
 import 'package:flutter/material.dart';
 import 'package:mystocks_ui/constants/currency.dart';
 import 'package:mystocks_ui/constants/style.dart';
-import 'package:mystocks_ui/model/MyAssets.dart';
-import 'package:mystocks_ui/model/bitcoin_info.dart';
+import 'package:mystocks_ui/model/asset_data_list_entity.dart';
 
 import '../crypto_api.dart';
 import 'asset_info_card.dart';
 
 class MyAssets extends StatefulWidget {
   final String userId;
+  Future<AssetDataListEntity>? futureAssets;
+  String currency = Currency.CZK;
 
-  MyAssets({Key? key, required this.userId}) : super(key: key);
+  MyAssets({Key? key, required this.userId, this.futureAssets}) {
+    futureAssets = CryptoApi().getAssetsData(userId, currency);
+  }
 
   @override
-  _MyAssets createState() => _MyAssets(userId: userId);
+  _MyAssets createState() => _MyAssets(userId: userId, futureAssets: futureAssets!);
 }
 
 class _MyAssets extends State<MyAssets> {
   final String userId;
   String currency = Currency.CZK;
 
-  Future<BitcoinInfo>? futureBtc;
+  Future<AssetDataListEntity>? futureAssets;
 
-  _MyAssets({required this.userId});
-
-  @override
-  void initState() {
-    super.initState();
-    futureBtc = CryptoApi().getBtcPrice(userId, currency);
-  }
+  _MyAssets({required this.userId, required this.futureAssets});
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +71,8 @@ class _MyAssets extends State<MyAssets> {
           ],
         ),
         SizedBox(height: defaultPadding),
-        FutureBuilder<BitcoinInfo>(
-          future: futureBtc,
+        FutureBuilder<AssetDataListEntity>(
+          future: futureAssets,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Column(
@@ -91,7 +88,7 @@ class _MyAssets extends State<MyAssets> {
                           mainAxisSpacing: defaultPadding,
                           childAspectRatio: 2.0
                       ),
-                      itemBuilder: (context, index) => AssetInfoCard(info: snapshot.data!, currency: currency,)
+                      itemBuilder: (context, index) => AssetInfoCard(info: snapshot.data!.assetData[0], currency: currency,)
                   )
                 ],
               );
