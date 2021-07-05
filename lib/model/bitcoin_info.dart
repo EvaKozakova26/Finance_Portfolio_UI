@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'btc_balance.dart';
 
 class BitcoinInfo {
-  final List<BtcBalance> btcRates;
+  final List<AssetRate> btcRates;
   final String btcBalance;
   final String investedInCrowns;
 
@@ -11,7 +11,7 @@ class BitcoinInfo {
 
   factory BitcoinInfo.fromJson(Map<String, dynamic> json) {
     var btcRatesFromJson = json['btcRates'] as List;
-    List<BtcBalance> btcRates = btcRatesFromJson.map((btcBalanceJson) => BtcBalance.fromJson(btcBalanceJson)).toList();
+    List<AssetRate> btcRates = btcRatesFromJson.map((btcBalanceJson) => AssetRate.fromJson(btcBalanceJson)).toList();
     return BitcoinInfo(
       btcBalance: json['btcBalance'],
       btcRates: btcRates,

@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:mystocks_ui/constants/api.dart';
+import 'package:mystocks_ui/model/asset_data_list_entity.dart';
 import 'package:mystocks_ui/model/crypto_transaction_create_entity.dart';
 import 'package:mystocks_ui/model/crypto_transaction_list_entity.dart';
 
@@ -13,11 +15,11 @@ class CryptoApi {
 
   Logger logger = Logger("CryptoApi");
 
-  Future<BitcoinInfo> getBtcPrice(String userId, String currency) async {
-    logger.fine("getBtcPrice has started");
-    final response = await http.get(Uri.https(Api.URL, 'btc/$userId'));
-    logger.fine("getBtcPrice has finished with code: " + response.statusCode.toString());
-    return BitcoinInfo.fromJson(jsonDecode(response.body));
+  Future<AssetDataListEntity> getAssetsData(String userId, String currency) async {
+    logger.fine("getAssetsData has started");
+    final response = await http.get(Uri.http(Api.URL, 'assets/$userId'));
+    logger.fine("getAssetsData has finished with code: " + response.statusCode.toString());
+    return AssetDataListEntity.fromJson(jsonDecode(response.body));
   }
 
   Future<CryptoTransactionListEntity> getAllTransactions(String userId) async {
