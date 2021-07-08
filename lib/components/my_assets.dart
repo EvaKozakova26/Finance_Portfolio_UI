@@ -80,7 +80,7 @@ class _MyAssets extends State<MyAssets> {
                 children: <Widget>[
                   GridView.builder(
                       shrinkWrap: true,
-                      itemCount: 6, //todo dynamic count podle poctu assetu?
+                      itemCount: snapshot.data!.assetData.length, //todo dynamic count podle poctu assetu?
                       gridDelegate:
                       SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3,
@@ -88,7 +88,7 @@ class _MyAssets extends State<MyAssets> {
                           mainAxisSpacing: defaultPadding,
                           childAspectRatio: 2.0
                       ),
-                      itemBuilder: (context, index) => AssetInfoCard(info: snapshot.data!.assetData[0], currency: currency,)
+                      itemBuilder: (context, index) => AssetInfoCard(info: snapshot.data!.assetData[index], currency: currency,)
                   )
                 ],
               );

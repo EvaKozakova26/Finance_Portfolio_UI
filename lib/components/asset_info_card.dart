@@ -39,7 +39,7 @@ class AssetInfoCard extends StatelessWidget {
                   borderRadius: const BorderRadius.all(Radius.circular(10))
               ),
               child: Text(
-                  info.assetBalance + ' BTC',
+                  info.assetBalance,
                 style: Theme.of(context)
                     .textTheme
                     .subtitle1!
@@ -53,7 +53,7 @@ class AssetInfoCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Bitcoin",
+                info.symbol,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context)

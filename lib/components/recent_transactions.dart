@@ -36,7 +36,7 @@ class _RecentTransactionListState extends State<RecentTransactions> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Recent transactions",
+            "Recent crypto transactions",
             style: Theme.of(context).textTheme.subtitle1,
           ),
           FutureBuilder<CryptoTransactionListEntity>(
