@@ -2,7 +2,7 @@ import 'package:mystocks_ui/constants/currency.dart';
 import 'package:mystocks_ui/model/asset_data.dart';
 import 'package:mystocks_ui/model/btc_balance.dart';
 
-class BitcoinDataHelper {
+class AssetDataHelper {
 
   num getAccBalanceValue(AssetData data, String currency) {
     AssetRate balance = filterBalanceByCurrency(data, currency)!;
@@ -22,7 +22,7 @@ class BitcoinDataHelper {
 
   AssetRate? filterBalanceByCurrency(AssetData data, String currency) {
     return data.assetBalanceList.firstWhere((element) => element.currency == currency,
-        orElse: () => new AssetRate(currency: Currency.USD, price: "0", accBalance: "0"));
+        orElse: () => data.assetBalanceList[0]);
   }
 
 }

@@ -13,8 +13,9 @@ class AssetInfoCard extends StatelessWidget {
   final AssetData info;
   String currency;
 
-  final BitcoinDataHelper bitcoinDataHelper = new BitcoinDataHelper();
+  final AssetDataHelper assetDataHelper = new AssetDataHelper();
 
+  // TODO dodelat symbol currnecy
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +100,8 @@ class AssetInfoCard extends StatelessWidget {
       Theme.of(context).textTheme.headline6!.apply(color: Colors.greenAccent);
 
   String getAccBalanceText(AssetData data) {
-    AssetRate balance = bitcoinDataHelper.filterBalanceByCurrency(data, currency)!;
+    AssetRate balance = assetDataHelper.filterBalanceByCurrency(data, currency)!;
+    return balance.accBalance;
     if (currency == Currency.USD) {
       return '\$' + balance.accBalance;
     } else {
@@ -108,7 +110,8 @@ class AssetInfoCard extends StatelessWidget {
   }
 
   String getPriceText(AssetData data) {
-    AssetRate balance = bitcoinDataHelper.filterBalanceByCurrency(data, currency)!;
+    AssetRate balance = assetDataHelper.filterBalanceByCurrency(data, currency)!;
+    return balance.price;
     if (currency == Currency.USD) {
       return '\$' + balance.price;
     } else {
@@ -119,9 +122,9 @@ class AssetInfoCard extends StatelessWidget {
   String getAccountBalanceText(AssetData data) {
     String text = '';
     if (currency == Currency.CZK) {
-      num diff = bitcoinDataHelper.getAccBalanceValue(data, currency);
-      double percentage = bitcoinDataHelper.getAccBalancePercentage(data, currency);
-      return text + diff.round().toString() + " Kč " + "(" + percentage.round().toString() + "%" + ")";
+      num diff = assetDataHelper.getAccBalanceValue(data, currency);
+      double percentage = assetDataHelper.getAccBalancePercentage(data, currency);
+      return text + diff.round().toString() + "(" + percentage.toStringAsPrecision(2) + "%" + ")";
     }
     return text;
   }
