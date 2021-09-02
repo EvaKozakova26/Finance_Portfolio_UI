@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mystocks_ui/constants/style.dart';
+import 'package:mystocks_ui/helper/color_utils.dart';
 import 'package:mystocks_ui/model/portfolio_detail.dart';
 import 'package:mystocks_ui/model/portfolio_detail_list_entity.dart';
 
@@ -86,7 +87,7 @@ class _DashboardScreen extends State<DashboardScreen> {
 
     for (PortfolioDetail detail in details) {
       PieChartSectionData data = PieChartSectionData(
-        color: mapColor(detail.symbol),
+        color: ColorUtils.mapColor(detail.symbol),
         value: double.parse(detail.sharePercentageHistoric),
         title: detail.symbol,
         radius: 100,
@@ -101,7 +102,7 @@ class _DashboardScreen extends State<DashboardScreen> {
 
     for (PortfolioDetail detail in details) {
       PieChartSectionData data = PieChartSectionData(
-        color: mapColor(detail.symbol),
+        color: ColorUtils.mapColor(detail.symbol),
         value: double.parse(detail.sharePercentageCurrent),
         title: detail.symbol,
         radius: 100,
@@ -109,19 +110,5 @@ class _DashboardScreen extends State<DashboardScreen> {
       pieChartSectionData.add(data);
     }
     return pieChartSectionData;
-  }
-
-  MaterialColor? mapColor(String symbol) {
-    Map<String, MaterialColor> colorMap = {
-      'btc': Colors.amber,
-      'MONET.PR': Colors.deepPurple,
-      'CEZ.PR': Colors.deepOrange,
-      'INTC': Colors.lightBlue,
-      'SOFI': Colors.indigo,
-      'SPY': Colors.blueGrey,
-      'MCD': Colors.red,
-      'TABAK.PR': Colors.blue,
-    };
-    return colorMap[symbol];
   }
 }

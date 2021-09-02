@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:mystocks_ui/components/portfolio_detail_card.dart';
 import 'package:mystocks_ui/constants/style.dart';
+import 'package:mystocks_ui/helper/AssetNameUtils.dart';
 
 import 'chart.dart';
 
@@ -52,7 +53,7 @@ class PortfolioDetails extends StatelessWidget {
             ),
             Chart(pieChartSelectionData: pieChartSelectionDataCurrent),
             for ( var i in createPortfolioDetailData(pieChartSelectionDataHistoric, pieChartSelectionDataCurrent) ) PortfolioDetailsInfoCard(
-              title: mapName(i.code),
+              title: AssetNameUtils.mapName(i.code),
               code: i.code,
               percentageHistoric: i.historicValue,
               percentageCurrent: i.currentValue,
@@ -64,20 +65,6 @@ class PortfolioDetails extends StatelessWidget {
     );
   }
 
-
-  String? mapName(String symbol) {
-    Map<String, String> nameMap = {
-      'btc': "Bitcoin",
-      'SOFI': "SoFi Technologies, Inc,",
-      'MCD': "McDonald's Corporation",
-      'SPY': "SPDR S&P 500 ETF Trust",
-      'INTC': "Intel Corporation",
-      'TABAK.PR': "Philip Morris CR a.s.",
-      'MONET.PR': "MONETA Money Bank, a.s.",
-      'CEZ.PR': "ČEZ, a. s. "
-    };
-    return nameMap[symbol];
-  }
 }
 
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mystocks_ui/constants/style.dart';
+import 'package:mystocks_ui/helper/color_utils.dart';
 
 class PortfolioDetailsInfoCard extends StatelessWidget {
   const PortfolioDetailsInfoCard({
@@ -17,6 +18,7 @@ class PortfolioDetailsInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+
       margin: EdgeInsets.only(top: defaultPadding),
       padding: EdgeInsets.all(defaultPadding),
       decoration: BoxDecoration(
@@ -26,7 +28,8 @@ class PortfolioDetailsInfoCard extends StatelessWidget {
           ),
           borderRadius: const BorderRadius.all(
               Radius.circular(defaultPadding)
-          )
+          ),
+        color: ColorUtils.mapColor(code!),
       ),
       child: Row(
         children: [

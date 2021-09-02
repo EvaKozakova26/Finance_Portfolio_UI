@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mystocks_ui/constants/currency.dart';
 import 'package:mystocks_ui/constants/style.dart';
+import 'package:mystocks_ui/helper/AssetNameUtils.dart';
 import 'package:mystocks_ui/helper/bitcoin_data_helper.dart';
+import 'package:mystocks_ui/helper/color_utils.dart';
 import 'package:mystocks_ui/model/asset_data.dart';
 import 'package:mystocks_ui/model/btc_balance.dart';
 
@@ -22,7 +24,7 @@ class AssetInfoCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(defaultPadding),
       decoration: BoxDecoration(
-          color: secondaryColor,
+          color: ColorUtils.mapColor(info.symbol),
           borderRadius: const BorderRadius.all(Radius.circular(10))
       ),
       child: Column(
@@ -34,9 +36,9 @@ class AssetInfoCard extends StatelessWidget {
             children: [Container(
               padding: EdgeInsets.all(defaultPadding * 0.75),
               height: 50,
-              width: 200,
+              width: 150,
               decoration: BoxDecoration(
-                  color: Colors.yellow.withOpacity(0.1),
+                  color: Colors.black54,
                   borderRadius: const BorderRadius.all(Radius.circular(10))
               ),
               child: Text(
@@ -54,7 +56,7 @@ class AssetInfoCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                info.symbol,
+                AssetNameUtils.mapName(info.symbol)!,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context)
@@ -76,10 +78,20 @@ class AssetInfoCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                getAccountBalanceText(info),
-                style: accBalanceTheme(context, info),
+              Container(
+                padding: EdgeInsets.all(defaultPadding * 0.75),
+                height: 50,
+                width: 150,
+                decoration: BoxDecoration(
+                    color: Colors.black54,
+                    borderRadius: const BorderRadius.all(Radius.circular(10))
+                ),
+                child:  Text(
+                  getAccountBalanceText(info),
+                  style: accBalanceTheme(context, info),
+                ),
               ),
+
               Text(
                 getAccBalanceText(info),
                 style: Theme.of(context)
@@ -97,7 +109,7 @@ class AssetInfoCard extends StatelessWidget {
   TextStyle accBalanceTheme(BuildContext context, AssetData data) =>
       getAccountBalanceText(data).startsWith("-") ?
       Theme.of(context).textTheme.headline6!.apply(color: Colors.redAccent) :
-      Theme.of(context).textTheme.headline6!.apply(color: Colors.greenAccent);
+      Theme.of(context).textTheme.headline6!.apply(color: Colors.greenAccent[700]);
 
   String getAccBalanceText(AssetData data) {
     AssetRate balance = assetDataHelper.filterBalanceByCurrency(data, currency)!;
