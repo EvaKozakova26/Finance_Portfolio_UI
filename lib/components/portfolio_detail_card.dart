@@ -29,7 +29,7 @@ class PortfolioDetailsInfoCard extends StatelessWidget {
           borderRadius: const BorderRadius.all(
               Radius.circular(defaultPadding)
           ),
-        color: ColorUtils.mapColor(code!),
+        color: ColorUtils.mapColor(code!)!.withOpacity(0.8),
       ),
       child: Row(
         children: [

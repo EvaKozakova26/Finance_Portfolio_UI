@@ -87,7 +87,7 @@ class _DashboardScreen extends State<DashboardScreen> {
 
     for (PortfolioDetail detail in details) {
       PieChartSectionData data = PieChartSectionData(
-        color: ColorUtils.mapColor(detail.symbol),
+        color: ColorUtils.mapColor(detail.symbol)!.withOpacity(0.8),
         value: double.parse(detail.sharePercentageHistoric),
         title: detail.symbol,
         radius: 100,
@@ -102,7 +102,7 @@ class _DashboardScreen extends State<DashboardScreen> {
 
     for (PortfolioDetail detail in details) {
       PieChartSectionData data = PieChartSectionData(
-        color: ColorUtils.mapColor(detail.symbol),
+        color: ColorUtils.mapColor(detail.symbol)!.withOpacity(0.8),
         value: double.parse(detail.sharePercentageCurrent),
         title: detail.symbol,
         radius: 100,

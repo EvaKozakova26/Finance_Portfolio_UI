@@ -24,7 +24,7 @@ class AssetInfoCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(defaultPadding),
       decoration: BoxDecoration(
-          color: ColorUtils.mapColor(info.symbol),
+          color: ColorUtils.mapColor(info.symbol)!.withOpacity(0.3),
           borderRadius: const BorderRadius.all(Radius.circular(10))
       ),
       child: Column(
