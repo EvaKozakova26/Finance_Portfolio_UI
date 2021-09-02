@@ -42,7 +42,7 @@ class CryptoApi {
 
   Future<PortfolioDetailListEntity> getPortfolioDetail(String userId) async {
     logger.fine("getPortfolioDetail has started");
-    final response = await http.get(Uri.http(Api.URL, 'detail/$userId'));
+    final response = await http.get(Uri.https(Api.URL, 'detail/$userId'));
     logger.fine("getPortfolioDetail has finished with code: " + response.statusCode.toString());
     return PortfolioDetailListEntity.fromJson(jsonDecode(response.body));
   }
