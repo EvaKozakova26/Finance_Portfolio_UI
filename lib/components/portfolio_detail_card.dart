@@ -6,11 +6,13 @@ class PortfolioDetailsInfoCard extends StatelessWidget {
     Key? key,
     required this.title,
     required this.code,
-    required this.percentage,
+    required this.percentageHistoric,
+    required this.percentageCurrent,
   }) : super(key: key);
 
-  final String title, code;
-  final int percentage;
+  final String? title, code;
+  final double percentageHistoric;
+  final double percentageCurrent;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class PortfolioDetailsInfoCard extends StatelessWidget {
           SizedBox(
             height: 20,
             width: 50,
-            child: Text(code),
+            child: Text(code!),
           ),
           Expanded(
               child: Padding(
@@ -42,7 +44,7 @@ class PortfolioDetailsInfoCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      title,
+                      title!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -57,7 +59,16 @@ class PortfolioDetailsInfoCard extends StatelessWidget {
                 ),
               )
           ),
-          Text("$percentage %")
+          SizedBox(
+            height: 20,
+            width: 70,
+            child: Text("$percentageHistoric %"),
+          ),
+          SizedBox(
+            height: 20,
+            width: 70,
+            child: Text("$percentageCurrent %")
+          ),
         ],
       ),
     );

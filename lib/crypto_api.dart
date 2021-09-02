@@ -8,6 +8,7 @@ import 'package:mystocks_ui/constants/api.dart';
 import 'package:mystocks_ui/model/asset_data_list_entity.dart';
 import 'package:mystocks_ui/model/crypto_transaction_create_entity.dart';
 import 'package:mystocks_ui/model/crypto_transaction_list_entity.dart';
+import 'package:mystocks_ui/model/portfolio_detail_list_entity.dart';
 
 import 'model/bitcoin_info.dart';
 
@@ -37,6 +38,13 @@ class CryptoApi {
         body: jsonEncode(ctce.toJson()));
     logger.fine("saveCryptoTransaction has finished with code: " + response.statusCode.toString());
     return CryptoTransactionCreateEntity.fromJson(jsonDecode(response.body));
+  }
+
+  Future<PortfolioDetailListEntity> getPortfolioDetail(String userId) async {
+    logger.fine("getPortfolioDetail has started");
+    final response = await http.get(Uri.http(Api.URL, 'detail/$userId'));
+    logger.fine("getPortfolioDetail has finished with code: " + response.statusCode.toString());
+    return PortfolioDetailListEntity.fromJson(jsonDecode(response.body));
   }
 
 

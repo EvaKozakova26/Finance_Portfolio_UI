@@ -6,12 +6,14 @@ import 'package:mystocks_ui/constants/style.dart';
 import 'chart.dart';
 
 class PortfolioDetails extends StatelessWidget {
-  const PortfolioDetails({
-    Key? key,
-    required this.pieChartSelectionData,
-  }) : super(key: key);
+  final String userId;
 
-  final List<PieChartSectionData> pieChartSelectionData;
+  PortfolioDetails({
+    Key? key,
+    required this.pieChartSelectionDataHistoric, required this.userId, required this.pieChartSelectionDataCurrent});
+
+  final List<PieChartSectionData> pieChartSelectionDataHistoric;
+  final List<PieChartSectionData> pieChartSelectionDataCurrent;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +25,8 @@ class PortfolioDetails extends StatelessWidget {
       ),
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children:
+          [
             Text(
               "Portfolio details",
               style: TextStyle(
@@ -32,24 +35,77 @@ class PortfolioDetails extends StatelessWidget {
               ),
             ),
             SizedBox(height: defaultPadding),
-            Chart(pieChartSelectionData: pieChartSelectionData),
-            PortfolioDetailsInfoCard(
-                title: "Bitcoin",
-                code: "BTC",
-                percentage: 50
+            Text(
+              "Historic",
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-            PortfolioDetailsInfoCard(
-                title: "Avast PLC",
-                code: "AVST",
-                percentage: 25
+            Chart(pieChartSelectionData: pieChartSelectionDataHistoric),
+            Text(
+              "Current",
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+              ),
             ),
-            PortfolioDetailsInfoCard(
-                title: "Phillip Morris",
-                code: "PMI",
-                percentage: 25
+            Chart(pieChartSelectionData: pieChartSelectionDataCurrent),
+            for ( var i in createPortfolioDetailData(pieChartSelectionDataHistoric, pieChartSelectionDataCurrent) ) PortfolioDetailsInfoCard(
+              title: mapName(i.code),
+              code: i.code,
+              percentageHistoric: i.historicValue,
+              percentageCurrent: i.currentValue,
             )
-          ]
+          ],
+
+
       ),
     );
   }
+
+
+  String? mapName(String symbol) {
+    Map<String, String> nameMap = {
+      'btc': "Bitcoin",
+      'SOFI': "SoFi Technologies, Inc,",
+      'MCD': "McDonald's Corporation",
+      'SPY': "SPDR S&P 500 ETF Trust",
+      'INTC': "Intel Corporation",
+      'TABAK.PR': "Philip Morris CR a.s.",
+      'MONET.PR': "MONETA Money Bank, a.s.",
+      'CEZ.PR': "ČEZ, a. s. "
+    };
+    return nameMap[symbol];
+  }
 }
+
+
+class PortfolioDetailData {
+  late String code;
+  late double historicValue;
+  late double currentValue;
+}
+
+List<PortfolioDetailData> createPortfolioDetailData(List<PieChartSectionData> historic, List<PieChartSectionData> current) {
+  List<PortfolioDetailData> result = [];
+  for (var data in historic) {
+    PortfolioDetailData portfolioDetailData = PortfolioDetailData();
+    portfolioDetailData.code = data.title;
+
+    PieChartSectionData currentData = current.firstWhere((element) => element.title == data.title);
+    portfolioDetailData.currentValue = currentData.value;
+
+    portfolioDetailData.historicValue = data.value;
+
+    result.sort((a, b) => b.currentValue.compareTo(a.historicValue));
+
+    result.add(portfolioDetailData);
+  }
+  return result;
+}
+
+
+
+
+

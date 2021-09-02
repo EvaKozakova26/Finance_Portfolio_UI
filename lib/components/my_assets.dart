@@ -80,7 +80,7 @@ class _MyAssets extends State<MyAssets> {
                 children: <Widget>[
                   GridView.builder(
                       shrinkWrap: true,
-                      itemCount: snapshot.data!.assetData.length, //todo dynamic count podle poctu assetu?
+                      itemCount: snapshot.data!.assetData.length,
                       gridDelegate:
                       SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 3,
