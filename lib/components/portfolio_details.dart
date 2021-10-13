@@ -85,8 +85,6 @@ List<PortfolioDetailData> createPortfolioDetailData(List<PieChartSectionData> hi
 
     portfolioDetailData.historicValue = data.value;
 
-    result.sort((a, b) => b.currentValue.compareTo(a.historicValue));
-
     result.add(portfolioDetailData);
   }
   return result;
