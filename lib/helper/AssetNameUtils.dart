@@ -9,7 +9,9 @@ class AssetNameUtils {
       'INTC': "Intel Corporation",
       'TABAK.PR': "Philip Morris CR a.s.",
       'MONET.PR': "MONETA Money Bank, a.s.",
-      'CEZ.PR': "ČEZ, a. s. "
+      'CEZ.PR': "ČEZ, a. s. ",
+      'SPG': "Simon Property Group, Inc.",
+      'FB': "Facebook, Inc."
     };
     return nameMap[symbol];
   }

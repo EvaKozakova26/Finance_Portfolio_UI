@@ -14,6 +14,8 @@ class ColorUtils {
       'SPY': Colors.lightGreen[300],
       'MCD': Colors.red[800],
       'TABAK.PR': Colors.blue,
+      'SPG': Colors.black87,
+      'FB': Colors.blue[900],
     };
     return colorMap[symbol];
   }
