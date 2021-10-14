@@ -53,6 +53,7 @@ class _TransactionListState extends State<TransactionList> {
                   rowsPerPage: 5,
                   columns: [
                     DataColumn(label: Text('Asset')),
+                    DataColumn(label: Text('Code')),
                     DataColumn(label: Text('Date')),
                     DataColumn(label: Text('Transaction value')),
                     DataColumn(label: Text('Market Price')),
@@ -290,6 +291,7 @@ class _DataSource extends DataTableSource {
       },
       cells: [
         DataCell(Text(row.type)),
+        DataCell(Text(row.code)),
         DataCell(Text(row.date)),
         DataCell(Text(row.buySellValue + " Kč" + " / " + '\$' + row.buySellValueInDollars)),
         DataCell(Text(row.stockPriceInCrowns + " Kč" + " / " + '\$' + row.stockPriceInDollars)),

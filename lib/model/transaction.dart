@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class TransactionDto {
 
   final String type;
+  final String code;
   final String date;
   final String amountBtc;
   final String buySellValue;
@@ -12,6 +13,7 @@ class TransactionDto {
 
   TransactionDto({
       required this.type,
+      required this.code,
       required this.date,
       required this.amountBtc,
       required this.buySellValue,
@@ -24,6 +26,7 @@ class TransactionDto {
   factory TransactionDto.fromJson(Map<String, dynamic> json) {
     return TransactionDto(
       type: json['type'],
+      code: json['code'],
       date: json['date'],
       amountBtc: json['amountBtc'],
       buySellValue: json['buySellValue'],
