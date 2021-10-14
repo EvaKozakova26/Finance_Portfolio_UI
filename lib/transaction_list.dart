@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mystocks_ui/crypto_api.dart';
-import 'package:mystocks_ui/model/crypto_transaction_list_entity.dart';
+import 'package:mystocks_ui/model/transaction_list_entity.dart';
 
 import 'constants/style.dart';
-import 'model/crypto_transaction.dart';
-import 'model/crypto_transaction_create_entity.dart';
+import 'model/transaction.dart';
+import 'model/transaction_create_entity.dart';
 
 class TransactionList extends StatefulWidget {
   final String userId;
-  Future<CryptoTransactionListEntity>? futureTransactions;
+  Future<TransactionListEntity>? futureTransactions;
 
   TransactionList({required this.userId, this.futureTransactions}) {
     futureTransactions = CryptoApi().getAllTransactions(userId);
@@ -21,7 +21,7 @@ class TransactionList extends StatefulWidget {
 
 class _TransactionListState extends State<TransactionList> {
   String userId;
-  Future<CryptoTransactionListEntity> futureTransactions;
+  Future<TransactionListEntity> futureTransactions;
 
   String formAmountOfBtc = "";
   String formTransactionValueInCrowns = "";
@@ -43,7 +43,7 @@ class _TransactionListState extends State<TransactionList> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          FutureBuilder<CryptoTransactionListEntity>(
+          FutureBuilder<TransactionListEntity>(
             future: futureTransactions,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -193,12 +193,12 @@ class _TransactionListState extends State<TransactionList> {
                                           onPressed: () {
                                             if (_formKey.currentState!.validate()) {
                                               _formKey.currentState!.save();
-                                              CryptoTransactionCreateEntity ctce = new CryptoTransactionCreateEntity(
+                                              TransactionCreateEntity ctce = new TransactionCreateEntity(
                                                   assetType: formAssetType,
                                                   amount: formAmountOfBtc,
                                                   transactionDate: formTransactionDate!,
                                                   transactionValue: formTransactionValueInCrowns);
-                                              CryptoApi().saveCryptoTransaction(ctce, userId);
+                                              CryptoApi().saveTransaction(ctce, userId);
 
                                               // save form
                                             }
@@ -247,8 +247,8 @@ class _DataSource extends DataTableSource {
 
   final BuildContext context;
   final String userId;
-  final List<CryptoTransactionDto> transactions;
-  List<CryptoTransactionDto> _rows = [];
+  final List<TransactionDto> transactions;
+  List<TransactionDto> _rows = [];
 
   int _selectedCount = 0;
 

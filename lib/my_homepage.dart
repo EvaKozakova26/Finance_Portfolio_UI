@@ -7,7 +7,7 @@ import 'crypto_api.dart';
 import 'helper/bitcoin_data_helper.dart';
 import 'model/bitcoin_info.dart';
 import 'model/btc_balance.dart';
-import 'model/crypto_transaction_create_entity.dart';
+import 'model/transaction_create_entity.dart';
 
 class MyHomePage extends StatefulWidget {
   final String userId;
@@ -296,12 +296,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                 onPressed: () {
                                   if (_formKey.currentState!.validate()) {
                                     _formKey.currentState!.save();
-                                    CryptoTransactionCreateEntity ctce = new CryptoTransactionCreateEntity(
+                                    TransactionCreateEntity ctce = new TransactionCreateEntity(
                                         assetType: formAssetType,
                                         amount: formAmountOfBtc,
                                         transactionDate: formTransactionDate!,
                                         transactionValue: formTransactionValueInCrowns);
-                                    CryptoApi().saveCryptoTransaction(ctce, userId);
+                                    CryptoApi().saveTransaction(ctce, userId);
 
                                     // save form
                                   }

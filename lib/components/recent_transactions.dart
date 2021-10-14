@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mystocks_ui/constants/style.dart';
-import 'package:mystocks_ui/model/crypto_transaction.dart';
-import 'package:mystocks_ui/model/crypto_transaction_list_entity.dart';
+import 'package:mystocks_ui/model/transaction.dart';
+import 'package:mystocks_ui/model/transaction_list_entity.dart';
 
 import '../crypto_api.dart';
 
 class RecentTransactions extends StatefulWidget {
   final String userId;
-  Future<CryptoTransactionListEntity>? futureTransactions;
+  Future<TransactionListEntity>? futureTransactions;
 
   RecentTransactions({required this.userId, this.futureTransactions}) {
     futureTransactions = CryptoApi().getAllTransactions(userId);
@@ -20,7 +20,7 @@ class RecentTransactions extends StatefulWidget {
 
 class _RecentTransactionListState extends State<RecentTransactions> {
   String userId;
-  Future<CryptoTransactionListEntity> futureTransactions;
+  Future<TransactionListEntity> futureTransactions;
 
   _RecentTransactionListState(
       {required this.userId, required this.futureTransactions});
@@ -39,7 +39,7 @@ class _RecentTransactionListState extends State<RecentTransactions> {
             "Recent crypto transactions",
             style: Theme.of(context).textTheme.subtitle1,
           ),
-          FutureBuilder<CryptoTransactionListEntity>(
+          FutureBuilder<TransactionListEntity>(
             future: futureTransactions,
             builder: (context, snapshot) {
               if (snapshot.hasData) {
@@ -74,7 +74,7 @@ class _RecentTransactionListState extends State<RecentTransactions> {
     );
   }
 
-  DataRow recentTransactionsDataRow(CryptoTransactionDto recentTransaction) {
+  DataRow recentTransactionsDataRow(TransactionDto recentTransaction) {
     return DataRow(cells: [
       DataCell(Text(recentTransaction.type)),
       DataCell(Text(recentTransaction.date)),

@@ -8,7 +8,7 @@ class PortfolioDetailListEntity {
 
   @override
   String toString() {
-    return 'PortfolioDetailListEntity[cryptoTransactions=$portfolioDetails, ]';
+    return 'PortfolioDetailListEntity[transactions=$portfolioDetails, ]';
   }
 
   PortfolioDetailListEntity.fromJson(Map<String, dynamic> json) {
