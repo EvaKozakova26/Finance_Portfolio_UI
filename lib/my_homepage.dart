@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mystocks_ui/transaction_list.dart';
 
 import 'constants/currency.dart';
-import 'crypto_api.dart';
+import 'main_api.dart';
 import 'helper/bitcoin_data_helper.dart';
 import 'model/bitcoin_info.dart';
 import 'model/btc_balance.dart';

@@ -4,7 +4,7 @@ import 'package:mystocks_ui/constants/currency.dart';
 import 'package:mystocks_ui/constants/style.dart';
 import 'package:mystocks_ui/model/asset_data_list_entity.dart';
 
-import '../crypto_api.dart';
+import '../main_api.dart';
 import 'asset_info_card.dart';
 
 class MyAssets extends StatefulWidget {
@@ -13,7 +13,7 @@ class MyAssets extends StatefulWidget {
   String currency = Currency.CZK;
 
   MyAssets({Key? key, required this.userId, this.futureAssets}) {
-    futureAssets = CryptoApi().getAssetsData(userId, currency);
+    futureAssets = MainApi().getAssetsData(userId, currency);
   }
 
   @override

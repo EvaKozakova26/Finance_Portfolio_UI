@@ -3,14 +3,14 @@ import 'package:mystocks_ui/constants/style.dart';
 import 'package:mystocks_ui/model/transaction.dart';
 import 'package:mystocks_ui/model/transaction_list_entity.dart';
 
-import '../crypto_api.dart';
+import '../main_api.dart';
 
 class RecentTransactions extends StatefulWidget {
   final String userId;
   Future<TransactionListEntity>? futureTransactions;
 
   RecentTransactions({required this.userId, this.futureTransactions}) {
-    futureTransactions = CryptoApi().getAllTransactions(userId);
+    futureTransactions = MainApi().getAllTransactions(userId);
   }
 
   @override
@@ -36,7 +36,7 @@ class _RecentTransactionListState extends State<RecentTransactions> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Recent crypto transactions",
+            "Recent transactions",
             style: Theme.of(context).textTheme.subtitle1,
           ),
           FutureBuilder<TransactionListEntity>(

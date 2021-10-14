@@ -10,7 +10,7 @@ import 'components/header.dart';
 import 'components/my_assets.dart';
 import 'components/portfolio_details.dart';
 import 'components/recent_transactions.dart';
-import 'crypto_api.dart';
+import 'main_api.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String userId;
@@ -18,7 +18,7 @@ class DashboardScreen extends StatefulWidget {
 
 
   DashboardScreen({Key? key, required this.userId}) {
-    futureDetails = CryptoApi().getPortfolioDetail(userId);
+    futureDetails = MainApi().getPortfolioDetail(userId);
   }
 
   @override

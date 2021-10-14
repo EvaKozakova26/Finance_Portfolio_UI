@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'package:mystocks_ui/constants/api.dart';
@@ -10,11 +9,9 @@ import 'package:mystocks_ui/model/transaction_create_entity.dart';
 import 'package:mystocks_ui/model/transaction_list_entity.dart';
 import 'package:mystocks_ui/model/portfolio_detail_list_entity.dart';
 
-import 'model/bitcoin_info.dart';
+class MainApi {
 
-class CryptoApi {
-
-  Logger logger = Logger("CryptoApi");
+  Logger logger = Logger("MainApi");
 
   Future<AssetDataListEntity> getAssetsData(String userId, String currency) async {
     logger.fine("getAssetsData has started");

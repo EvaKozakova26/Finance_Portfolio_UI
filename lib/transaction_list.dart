@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mystocks_ui/crypto_api.dart';
+import 'package:mystocks_ui/main_api.dart';
 import 'package:mystocks_ui/model/transaction_list_entity.dart';
 
 import 'constants/style.dart';
@@ -11,7 +11,7 @@ class TransactionList extends StatefulWidget {
   Future<TransactionListEntity>? futureTransactions;
 
   TransactionList({required this.userId, this.futureTransactions}) {
-    futureTransactions = CryptoApi().getAllTransactions(userId);
+    futureTransactions = MainApi().getAllTransactions(userId);
   }
 
   @override
@@ -198,7 +198,7 @@ class _TransactionListState extends State<TransactionList> {
                                                   amount: formAmountOfBtc,
                                                   transactionDate: formTransactionDate!,
                                                   transactionValue: formTransactionValueInCrowns);
-                                              CryptoApi().saveTransaction(ctce, userId);
+                                              MainApi().saveTransaction(ctce, userId);
 
                                               // save form
                                             }
