@@ -26,6 +26,7 @@ class _TransactionListState extends State<TransactionList> {
   String formAmountOfBtc = "";
   String formTransactionValueInCrowns = "";
   String formAssetType = "";
+  String formCurrency = "";
   DateTime? formTransactionDate;
   TextEditingController? dateField = TextEditingController();
   DateTime selectedDate = DateTime.now();
@@ -121,17 +122,17 @@ class _TransactionListState extends State<TransactionList> {
                                         child: TextFormField(
                                           decoration: InputDecoration(
                                             border: UnderlineInputBorder(),
-                                            labelText: 'Type',
+                                            labelText: 'Code',
                                           ),
                                           validator: (value) {
                                             if (value == null || value.isEmpty) {
-                                              return 'Type';
+                                              return 'Code of share';
                                             }
                                             formAssetType = value;
                                             return null;
                                           },
-                                          initialValue: "btc",
-                                          enabled: false,
+                                          //initialValue: "btc",
+                                          //enabled: false,
                                         ),
                                       ),
                                       Padding(
@@ -139,11 +140,29 @@ class _TransactionListState extends State<TransactionList> {
                                         child: TextFormField(
                                           decoration: InputDecoration(
                                             border: UnderlineInputBorder(),
-                                            labelText: 'enter amount of btc',
+                                            labelText: 'Currency',
                                           ),
                                           validator: (value) {
                                             if (value == null || value.isEmpty) {
-                                              return 'enter amount of btc';
+                                              return 'type currency';
+                                            }
+                                            formCurrency = value;
+                                            return null;
+                                          },
+                                          //initialValue: "btc",
+                                          //enabled: false,
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: TextFormField(
+                                          decoration: InputDecoration(
+                                            border: UnderlineInputBorder(),
+                                            labelText: 'Shares',
+                                          ),
+                                          validator: (value) {
+                                            if (value == null || value.isEmpty) {
+                                              return 'enter amount of shares';
                                             }
                                             formAmountOfBtc = value;
                                             return null;
@@ -156,7 +175,7 @@ class _TransactionListState extends State<TransactionList> {
                                           controller: dateField,
                                           decoration: InputDecoration(
                                             border: UnderlineInputBorder(),
-                                            labelText: 'select date',
+                                            labelText: 'Select date',
                                           ),
                                           validator: (value) {
                                             if (value == null || value.isEmpty) {
@@ -175,11 +194,11 @@ class _TransactionListState extends State<TransactionList> {
                                         child: TextFormField(
                                           decoration: InputDecoration(
                                             border: UnderlineInputBorder(),
-                                            labelText: 'enter transaction value in crowns',
+                                            labelText: 'Transaction value',
                                           ),
                                           validator: (value) {
                                             if (value == null || value.isEmpty) {
-                                              return 'enter transaction value in crowns';
+                                              return 'enter transaction value';
                                             }
                                             formTransactionValueInCrowns = value;
                                             return null;
@@ -197,7 +216,8 @@ class _TransactionListState extends State<TransactionList> {
                                                   assetType: formAssetType,
                                                   amount: formAmountOfBtc,
                                                   transactionDate: formTransactionDate!,
-                                                  transactionValue: formTransactionValueInCrowns);
+                                                  transactionValue: formTransactionValueInCrowns,
+                                                  currency: formCurrency);
                                               MainApi().saveTransaction(ctce, userId);
 
                                               // save form
