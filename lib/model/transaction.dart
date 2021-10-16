@@ -5,7 +5,7 @@ class TransactionDto {
   final String type;
   final String code;
   final String date;
-  final String amountBtc;
+  final String amount;
   final String buySellValue;
   final String buySellValueInDollars;
   final String stockPriceInDollars;
@@ -15,7 +15,7 @@ class TransactionDto {
       required this.type,
       required this.code,
       required this.date,
-      required this.amountBtc,
+      required this.amount,
       required this.buySellValue,
       required this.buySellValueInDollars,
       required this.stockPriceInDollars,
@@ -28,7 +28,7 @@ class TransactionDto {
       type: json['type'],
       code: json['code'],
       date: json['date'],
-      amountBtc: json['amountBtc'],
+      amount: json['amount'],
       buySellValue: json['buySellValue'],
       buySellValueInDollars: json['buySellValueInDollars'],
       stockPriceInDollars: json['stockPriceInDollars'],

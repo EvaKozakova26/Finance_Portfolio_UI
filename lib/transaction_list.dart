@@ -50,7 +50,7 @@ class _TransactionListState extends State<TransactionList> {
               if (snapshot.hasData) {
                 return PaginatedDataTable(
                   header: Text('List of all transactions'),
-                  rowsPerPage: 5,
+                  rowsPerPage: 10,
                   columns: [
                     DataColumn(label: Text('Asset')),
                     DataColumn(label: Text('Code')),
@@ -59,7 +59,8 @@ class _TransactionListState extends State<TransactionList> {
                     DataColumn(label: Text('Market Price')),
                     DataColumn(label: Text('Amount')),
                   ],
-                  actions: [
+                  // tohle uz neni potreba
+                  /*actions: [
                     Row(
                       children: [
                         Text(
@@ -72,7 +73,7 @@ class _TransactionListState extends State<TransactionList> {
                         ),
                       ],
                     )
-                  ],
+                  ],*/
                   source: _DataSource(context, userId, snapshot.data!.transactions),
                 );
               } else if (snapshot.hasError) {
@@ -295,7 +296,7 @@ class _DataSource extends DataTableSource {
         DataCell(Text(row.date)),
         DataCell(Text(row.buySellValue + " Kč" + " / " + '\$' + row.buySellValueInDollars)),
         DataCell(Text(row.stockPriceInCrowns + " Kč" + " / " + '\$' + row.stockPriceInDollars)),
-        DataCell(Text(row.amountBtc)),
+        DataCell(Text(row.amount)),
       ],
     );
   }

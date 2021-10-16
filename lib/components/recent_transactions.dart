@@ -88,7 +88,7 @@ class _RecentTransactionListState extends State<RecentTransactions> {
           " / " +
           '\$' +
           recentTransaction.stockPriceInDollars)),
-      DataCell(Text(recentTransaction.amountBtc)),
+      DataCell(Text(recentTransaction.amount)),
     ]);
   }
 }
