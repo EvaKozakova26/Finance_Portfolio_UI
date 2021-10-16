@@ -22,7 +22,7 @@ class MainApi {
 
   Future<TransactionListEntity> getAllTransactions(String userId) async {
     logger.fine("getAllTransactions has started");
-    final response = await http.get(Uri.https(Api.URL, 'all/$userId'));
+    final response = await http.get(Uri.https(Api.URL, 'transaction/all/$userId'));
     logger.fine("getAllTransactions has finished with code: " + response.statusCode.toString());
     return TransactionListEntity.fromJson(jsonDecode(response.body));
   }
