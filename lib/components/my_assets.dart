@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:mystocks_ui/constants/currency.dart';
 import 'package:mystocks_ui/constants/style.dart';
+import 'package:mystocks_ui/helper/AssetNameUtils.dart';
 import 'package:mystocks_ui/model/asset_data_list_entity.dart';
 import 'package:mystocks_ui/model/transaction_create_entity.dart';
 
@@ -32,8 +33,8 @@ class _MyAssets extends State<MyAssets> {
 
   String accBalanceText = "";
 
-  String formAmountOfBtc = "";
-  String formTransactionValueInCrowns = "";
+  String formAmount = "";
+  String formTransactionValue = "";
   String formAssetType = "";
   String formCurrency = "";
   DateTime? formTransactionDate;
@@ -170,7 +171,7 @@ class _MyAssets extends State<MyAssets> {
                                           if (value == null || value.isEmpty) {
                                             return 'enter amount of shares';
                                           }
-                                          formAmountOfBtc = value;
+                                          formAmount = value;
                                           return null;
                                         },
                                       ),
@@ -206,7 +207,7 @@ class _MyAssets extends State<MyAssets> {
                                           if (value == null || value.isEmpty) {
                                             return 'enter transaction value';
                                           }
-                                          formTransactionValueInCrowns = value;
+                                          formTransactionValue = value;
                                           return null;
                                         },
                                       ),
@@ -220,9 +221,9 @@ class _MyAssets extends State<MyAssets> {
                                             _formKey.currentState!.save();
                                             TransactionCreateEntity ctce = new TransactionCreateEntity(
                                                 assetType: formAssetType,
-                                                amount: formAmountOfBtc,
+                                                amount: formAmount,
                                                 transactionDate: formTransactionDate!,
-                                                transactionValue: formTransactionValueInCrowns,
+                                                transactionValue: formTransactionValue,
                                                 currency: formCurrency);
                                             MainApi().saveTransaction(ctce, userId);
 
